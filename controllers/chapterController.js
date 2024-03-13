@@ -4,7 +4,7 @@ import Subject from "../schemas/subjectSchema.js";
 
 export const addChapter = asyncHandler(async (req,res)=> {
     try {
-        const {chapterUrl,subjectId,name} = req.body;
+        const {chapterUrl,subjectId,name,desc} = req.body;
 
         const subjectDoc = await Subject.findById(subjectId);
 
@@ -30,7 +30,8 @@ export const addChapter = asyncHandler(async (req,res)=> {
         const chapter = await Chapter.create({
             chapterUrl,
             name,
-            subject:subjectId
+            subject:subjectId,
+            desc
           });
 
           return res.status(200).json({success:true,chapter});
