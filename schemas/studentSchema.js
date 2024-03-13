@@ -10,6 +10,8 @@ const studentSchema = mongoose.Schema({
     lastName:{type:String},
     rollNo:{type:String},
     standard:{type:Number},
+    syllabus : {type:String},
+    medium: {type:String},
     subjectCompletion:[subjectCompletionSchema],
     user:{type:mongoose.Schema.Types.ObjectId, ref:"users"}
   });

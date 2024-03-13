@@ -5,7 +5,7 @@ const subjectSchema = mongoose.Schema({
     standard:{type:Number, required:true},
     syllabus:{type:String, required:true},
     medium:{type:String,required:true},
-    noOfChapter:{type:String,default:0}
+    noOfChapter:{type:Number,default:0}
   });
 
 

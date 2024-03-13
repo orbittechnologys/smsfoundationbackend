@@ -55,3 +55,19 @@ export const getSubjects = asyncHandler(async (req,res)=> {
     }
 
 })
+
+export const getSubjectById = asyncHandler(async (req,res)=> {
+    try {
+        
+        const subjectId = req.params.subjectId;
+        const subjectDoc = await Subject.findById(subjectId);
+        if(!subjectDoc){
+            return res.status(400).json({success:false,msg:"No such subject ID"})
+        }
+        return res.status(200).json({success:true,subjectDoc});
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({success:false,error});
+    }
+})

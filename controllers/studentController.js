@@ -6,7 +6,7 @@ import User from "../schemas/userSchema.js";
 
 export const addStudent = asyncHandler(async (req,res)=> {
     try {
-        const {email,firstName,lastName,rollNo,standard,school,password} = req.body
+        const {email,firstName,lastName,rollNo,standard,school,password, syllabus,medium} = req.body
 
         const userDoc = await User.findOne({email});
         if(userDoc){
@@ -29,6 +29,8 @@ export const addStudent = asyncHandler(async (req,res)=> {
             lastName,
             rollNo,
             standard,
+            syllabus,
+            medium,
             school,
             user:user._id
           });
@@ -40,3 +42,14 @@ export const addStudent = asyncHandler(async (req,res)=> {
     }
 })
 
+
+export const getStudentByUserId = asyncHandler(async (req,res)=> {
+    try {
+        const userId = req.params.userId;
+        const studentDoc = await Student.find({user: userId});
+        return res.status(200).json({success:true,studentDoc});
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({success:false,error})
+    }
+})
