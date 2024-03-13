@@ -46,7 +46,7 @@ export const addStudent = asyncHandler(async (req,res)=> {
 export const getStudentByUserId = asyncHandler(async (req,res)=> {
     try {
         const userId = req.params.userId;
-        const studentDoc = await Student.find({user: userId});
+        const studentDoc = await Student.findOne({user: userId});
         return res.status(200).json({success:true,studentDoc});
     } catch (error) {
         console.log(error);
