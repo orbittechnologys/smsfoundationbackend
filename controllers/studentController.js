@@ -14,6 +14,12 @@ export const addStudent = asyncHandler(async (req,res)=> {
             return res.status(400).json({success:false,msg:"User already exists with the email"})
         }
 
+        const studentDoc = await Student.findOne({rollNo,school});
+        if(studentDoc){
+            console.log("User already exists");
+            return res.status(400).json({success:false,msg:"User already exists with the rollNo and school"})
+        }
+
         const user = await User.create({
             email,
             username:`${firstName} ${lastName}`,
