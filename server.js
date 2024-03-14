@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import mongooseConnection from "./mongo.js";
 import appRoutes from './routes/index.js'
+import fs from 'fs';
 
 
 const port = process.env.PORT || 4000;
@@ -27,6 +28,25 @@ app.use(
 
 
   app.use("/api", appRoutes);
+
+  app.get("/download/sample", (req, res) => {
+    const filePath = "/home/sample.txt"; // Path to the file on the server
+  
+    // Read the file from the server's filesystem
+    fs.readFile(filePath, (err, data) => {
+      if (err) {
+        console.error("Error reading file:", err);
+        return res.status(500).send("Internal Server Error");
+      }
+      
+      // Set response headers to indicate file type and attachment
+      res.setHeader("Content-Type", "text/plain");
+      res.setHeader("Content-Disposition", "attachment; filename=sample.txt");
+      
+      // Send the file as a response
+      res.send(data);
+    });
+  });
 
 
   app.listen(port, (req, res) => {
