@@ -30,7 +30,7 @@ app.use(
   app.use("/api", appRoutes);
 
   app.get("/download/sample", (req, res) => {
-    const filePath = "/home/sample.txt"; // Path to the file on the server
+    const filePath = "/home/example.txt"; // Path to the file on the server
   
     // Read the file from the server's filesystem
     fs.readFile(filePath, (err, data) => {
@@ -41,7 +41,7 @@ app.use(
       
       // Set response headers to indicate file type and attachment
       res.setHeader("Content-Type", "text/plain");
-      res.setHeader("Content-Disposition", "attachment; filename=sample.txt");
+      res.setHeader("Content-Disposition", "attachment; filename=example.txt");
       
       // Send the file as a response
       res.send(data);
