@@ -55,3 +55,18 @@ export const getTestByChapter = asyncHandler(async (req,res)=> {
         return res.status(500).json({success:false,error});
     }
 })
+
+export const getTest = asyncHandler(async (req,res)=> {
+    try {
+        const testId = req.params.testId;
+        const test = await Test.findById(testId);
+        if(!test){
+            console.log("No test found "+testId);
+            return res.status(400).json({success:false,msg:"No test found "+testId})
+        }
+        return res.status(200).json({success:true,test});
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({success:false,error});
+    }
+})
