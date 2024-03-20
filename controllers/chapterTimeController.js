@@ -82,3 +82,17 @@ export const updateChapterTime = asyncHandler(async (req,res)=> {
         return res.status(500).json({success:false,error});
     }
 })
+
+export const getChapterTimeForStudent = asyncHandler(async (req,res)=> {
+    try {
+        const studentId = req.params.studentId;
+
+        const chapterTimes = await ChapterTime.find({student:studentId}).populate("chapter").exec();
+
+        return res.status(200).json(chapterTimes);
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json(error);
+    }
+})
