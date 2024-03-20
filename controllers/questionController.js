@@ -38,8 +38,8 @@ export const addQuestion = asyncHandler(async (req,res)=> {
           console.log("Question created");
 
           await Test.updateOne({_id:testDoc._id},{
-            noOfQuestions:testDoc.noOfQuestions +1,
-            totalMarks:testDoc.totalMarks +marks
+            noOfQuestions:Number(testDoc.noOfQuestions) + 1,
+            totalMarks:Number(testDoc.totalMarks) + Number(marks)
           })
 
           console.log("Updated Test");
