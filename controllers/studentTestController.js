@@ -55,3 +55,26 @@ export const submitTest = asyncHandler(async (req,res)=> {
         return res.status(500).json({success:false,error});
     }
 })
+
+export const getTestsForStudent = asyncHandler(async (req,res)=> {
+    try {
+        const studentId = req.params.studentId;
+        const student = await Student.findById(studentId);
+        if(!student){
+            return res.status(400).json({success:false,msg:"No such student found "+studentId})
+        }
+
+        const studentTests = await studentTest.find({ student: studentId })
+        .populate({
+            path: 'test',
+            populate: { path: 'chapter' }
+        })
+        .exec();
+
+        return res.status(200).json({success:true,studentTests})
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({success:false,error});
+    }
+})
