@@ -6,7 +6,8 @@ const chapterSchema = mongoose.Schema({
     name:{type:String},
     desc:{type:String},
     subject:{type:mongoose.Schema.Types.ObjectId, ref:"subject"},
-    totalHours:{type:Number,default:0}
+    totalHours:{type:Number,default:0},
+    test:{type:mongoose.Schema.Types.ObjectId, ref:"test"}
   });
 
 

@@ -6,6 +6,8 @@ import subjectRouter from './subjectRoutes.js';
 import studentRouter from './studentRoutes.js';
 import chapterRouter from './chapterRoutes.js';
 import chapterTimeRouter from './chapterTimeRoutes.js';
+import testRouter from './testRoutes.js';
+import questionRouter from './questionRoutes.js';
 
 const router = expressRouter();
 
@@ -15,5 +17,7 @@ router.use('/subject',subjectRouter);
 router.use('/student',studentRouter);
 router.use('/chapter',chapterRouter);
 router.use("/chapterTime",chapterTimeRouter);
+router.use("/test",testRouter);
+router.use("/question",questionRouter);
 
 export default router;
