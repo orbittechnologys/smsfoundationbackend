@@ -13,6 +13,7 @@ const studentSchema = mongoose.Schema({
     syllabus : {type:String},
     medium: {type:String},
     subjectCompletion:[subjectCompletionSchema],
+    school:{type:String},
     user:{type:mongoose.Schema.Types.ObjectId, ref:"users"}
   });
 
