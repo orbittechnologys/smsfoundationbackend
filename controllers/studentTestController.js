@@ -88,3 +88,18 @@ export const getTestReport = asyncHandler(async (req,res)=> {
         return res.status(500).json({success:false,error})
     }
 })
+
+export const getTestResults = asyncHandler(async (req,res)=>{
+    try {
+        const {
+            studentId,
+            testId
+        } = req.body;
+        const testResults = await studentTest.findOne({student:studentId,test:testId}).populate("student").populate("test").exec();
+
+        return res.status(200).json({success:true,testResults})
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({success:false,error})
+    }
+})
