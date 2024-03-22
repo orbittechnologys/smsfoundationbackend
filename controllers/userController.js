@@ -64,3 +64,20 @@ export const login = asyncHandler(async (req,res) => {
     return res.status(500).json(error);
   }
 })
+
+export const getUser = asyncHandler(async (req,res)=> {
+  try {
+    const userId = req.params.userId;
+    
+    const userDoc = await User.findById(userId);
+
+    if(!userDoc){
+      return res.status(400).json({success:true,msg:"No user with id"+userId});
+    }
+
+    return res.status(200).json({success:true,userDoc});
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({success:false,error})
+  }
+})
