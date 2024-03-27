@@ -1,5 +1,7 @@
 import asyncHandler from "express-async-handler";
-import School from '../schemas/schoolSchema.js'
+import School from '../schemas/schoolSchema.js';
+import Student from '../schemas/studentSchema.js';
+import Instructor from '../schemas/instructorSchema.js';
 
 export const addSchool = asyncHandler(async (req,res)=> {
     try {
@@ -26,5 +28,18 @@ export const getAllSchool = asyncHandler(async (req,res)=> {
     } catch (error) {
         console.log(error);
         return res.status(500).json({success:false,error})
+    }
+})
+
+export const getTotals = asyncHandler(async (req,res)=> {
+    try {
+        const totalSchool = await School.countDocuments();
+        const totalInstructor = await Instructor.countDocuments();
+        const totalStudents = await Student.countDocuments();
+
+        return res.status(200).json({success:true,totalSchool,totalInstructor,totalStudents});
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({success:false,error});
     }
 })
