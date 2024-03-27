@@ -59,3 +59,14 @@ export const getStudentByUserId = asyncHandler(async (req,res)=> {
         return res.status(500).json({success:false,error})
     }
 })
+
+
+export const getAllDistricts = asyncHandler(async (req, res) => {
+    try {
+        const districts = await School.distinct('district');
+        return res.status(200).json({ success: true, districts });
+    } catch (error) {
+        console.error("Error fetching districts:", error);
+        return res.status(500).json({ success: false, error: "Internal server error" });
+    }
+});
