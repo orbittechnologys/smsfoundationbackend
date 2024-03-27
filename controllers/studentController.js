@@ -59,3 +59,46 @@ export const getStudentByUserId = asyncHandler(async (req,res)=> {
         return res.status(500).json({success:false,error})
     }
 })
+
+export const updateStudent = asyncHandler(async (req,res) => {
+    try {
+
+        const {studentId,firstName,lastName,rollNo,standard } = req.body;
+        const studentDoc = await Student.findById(studentId);
+        if(!studentDoc){
+            console.log("Invalid student id "+studentId);
+            return res.status(400).json({success:false,msg:"Invalid student Id"+studentId})
+        }
+        await Student.updateOne({_id:studentId},{
+            firstName,
+            lastName,
+            rollNo,
+            standard
+        })
+
+        console.log("Updated student Doc");
+        return res.status(200).json({success:true,msg:"Updated Student Successfully"})
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({success:false,error})
+    }
+})
+
+
+export const getStudent = asyncHandler(async (req,res) => {
+    try {
+        const studentId = req.params.studentId;
+        const studentDoc = await Student.findById(studentId);
+
+        if(!studentDoc){
+            console.log("No student found with id "+studentId);
+            return res.status(400).json({success:false,msg:"No student found with id "+studentId})
+        }
+
+        return res.status(200).json({success:true,studentDoc});
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({success:false,error})
+    }
+})
