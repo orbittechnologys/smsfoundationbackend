@@ -3,6 +3,8 @@ import Test from "../schemas/testSchema.js";
 import Student from "../schemas/studentSchema.js";
 import ChapterTime from "../schemas/chapterTimeSchema.js";
 import studentTest from "../schemas/studentTestSchema.js";
+import School from '../schemas/schoolSchema.js';
+import mongoose from 'mongoose';
 
 export const submitTest = asyncHandler(async (req,res)=> {
     try {
@@ -101,5 +103,55 @@ export const getTestResults = asyncHandler(async (req,res)=>{
     } catch (error) {
         console.log(error);
         return res.status(500).json({success:false,error})
+    }
+})
+
+export const getLearningReportForSchool = asyncHandler(async (req,res) => {
+    try {
+        const schoolId = req.params.schoolId;
+        const schoolDoc = await School.findById(schoolId);
+        if(!schoolDoc){
+            console.log("Invalid school id "+schoolId);
+            return res.status(400).json({success:false,msg:"Invalid school id "+schoolId});
+        }
+
+        const objectIdSchoolId = new mongoose.Types.ObjectId(schoolId);
+
+        const testReport = await studentTest.aggregate([
+            {
+                $lookup:{
+                    from:"students", // name of the collection in mongo db
+                    localField:"student",
+                    foreignField:"_id",
+                    as:"student"
+                }
+            },// performs left outer join on students
+            {
+                $match:{
+                    "student.school":objectIdSchoolId
+                }
+            }, //Performs matching i,e. matches student document's school with schoolId
+            {
+                $unwind:"$student" // Performs same as populate()
+            },
+            {
+                $lookup:{
+                    from:"tests", //name of collection in mongo db
+                    localField:"test",
+                    foreignField:"_id",
+                    as:"test"
+                }
+            },
+            {
+                $unwind:"$test"
+            }
+        ])
+
+        // const testReport = await studentTest.find({}).populate("student").populate("test").exec();
+        return res.status(200).json({success:true,testReport});
+
+    } catch (error) {
+       console.log(error);
+       return res.status(500).json({success:false,error}); 
     }
 })

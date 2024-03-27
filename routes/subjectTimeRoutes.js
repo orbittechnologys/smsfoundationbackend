@@ -1,8 +1,9 @@
 import express from 'express';
-import { getOverallSubjectReport } from '../controllers/subjectTimeController.js';
+import { getOverallSubjectReport, getSubjectReportOfSchool } from '../controllers/subjectTimeController.js';
 
 const subjectTimeRouter = express.Router();
 
 subjectTimeRouter.route("/getLearningReport").get(getOverallSubjectReport);
+subjectTimeRouter.route("/getLearningReportForSchool/:schoolId").get(getSubjectReportOfSchool);
 
 export default subjectTimeRouter;
