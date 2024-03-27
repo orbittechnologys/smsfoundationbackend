@@ -87,7 +87,15 @@ export const getChapterTimeForStudent = asyncHandler(async (req,res)=> {
     try {
         const studentId = req.params.studentId;
 
-        const chapterTimes = await ChapterTime.find({student:studentId}).populate("chapter").exec();
+        const chapterTimes = await ChapterTime.find({ student: studentId })
+        .populate({
+            path: 'chapter',
+            populate: {
+                path: 'subject',
+                model: 'subject'
+            }
+        })
+        .exec();
 
         return res.status(200).json(chapterTimes);
 
