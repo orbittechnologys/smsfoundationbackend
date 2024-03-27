@@ -147,3 +147,27 @@ export const getStudentsQueryViaSchool = asyncHandler (async (req,res)=> {
         return res.status(500).json({success:false,error});
     }
 })
+
+export const resetPassword = asyncHandler(async (req,res) => {
+    try {
+        const {studentId, newPassword} = req.body;
+
+        const studentDoc = await Student.findById(studentId);
+        if(!studentDoc){
+            console.log("Student id not valid "+studentId);
+            return res.status(400).json({success:false,msg:"Student id not valid "+studentId})
+        }
+
+        const userDoc = await User.findById(studentDoc.user);
+
+        userDoc.password = newPassword;
+
+        await userDoc.save();
+
+        return res.status(200).json({success:true,msg:"Password updated successfully"})
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({success:false,error});
+    }
+})
