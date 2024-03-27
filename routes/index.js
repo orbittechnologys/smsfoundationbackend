@@ -10,6 +10,7 @@ import testRouter from './testRoutes.js';
 import questionRouter from './questionRoutes.js';
 import subjectTimeRouter from './subjectTimeRoutes.js';
 import studentTestRouter from './studentTestRoutes.js';
+import schoolRouter from './schoolRoutes.js'
 
 const router = expressRouter();
 
@@ -23,5 +24,6 @@ router.use("/test",testRouter);
 router.use("/question",questionRouter);
 router.use("/subjectTime",subjectTimeRouter);
 router.use("/studentTest",studentTestRouter);
+router.use("/school",schoolRouter);
 
 export default router;

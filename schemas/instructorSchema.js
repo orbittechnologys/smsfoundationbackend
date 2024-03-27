@@ -9,7 +9,7 @@ const instructorSchema = mongoose.Schema({
     },
     firstName: {type:String},
     lastName:String,
-    school:String,
+    school:{type:mongoose.Schema.Types.ObjectId, ref:"school"},
     medium:String,
     user:{type:mongoose.Schema.Types.ObjectId, ref:"users"}
   });
