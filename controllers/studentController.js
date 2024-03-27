@@ -128,3 +128,22 @@ export const getStudentsQuery = asyncHandler(async (req,res) => {
         return res.status(500).json({success:false,error});
     }
 })
+
+export const getStudentsQueryViaSchool = asyncHandler (async (req,res)=> {
+    try {
+        const query = req.headers.query;
+        const schoolId = req.headers.school;
+
+        console.log(query,schoolId,"Search in progress")
+
+        const regexPattern = new RegExp(query, "i");
+        const students = await Student.find({
+            firstName:{$regex :regexPattern},
+            school:schoolId
+          });
+          return res.status(200).json({success:true,students});
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({success:false,error});
+    }
+})
