@@ -40,3 +40,14 @@ export const addInstructor = asyncHandler(async (req,res)=> {
     }
 })
 
+
+export const getInstructorByUserId = asyncHandler(async (req,res)=> {
+    try {
+        const userId = req.params.userId;
+        const instructorDoc = await Instructor.findOne({user: userId}).populate("school").exec();
+        return res.status(200).json({success:true,instructorDoc});
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({success:false,error});
+    }
+})
