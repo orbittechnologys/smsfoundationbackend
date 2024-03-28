@@ -47,7 +47,11 @@ export const getTotals = asyncHandler(async (req,res)=> {
 export const getAllDistricts = asyncHandler(async (req, res) => {
     try {
         const districts = await School.distinct('district');
-        return res.status(200).json({ success: true, districts });
+
+        const syllabus = await School.distinct('syllabus');
+        const medium = await School.distinct('medium');
+
+        return res.status(200).json({ success: true, districts, syllabus,medium });
     } catch (error) {
         console.error("Error fetching districts:", error);
         return res.status(500).json({ success: false, error: "Internal server error" });
