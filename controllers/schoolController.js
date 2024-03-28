@@ -57,3 +57,15 @@ export const getAllDistricts = asyncHandler(async (req, res) => {
         return res.status(500).json({ success: false, error: "Internal server error" });
     }
 });
+
+export const getSchoolByDistrictSyllabusMedium = asyncHandler(async (req,res) => {
+    try {
+        const {district, syllabus, medium } = req.body;
+        const schools = await School.find({district,syllabus,medium});
+
+        return res.status(200).json({success:true,schools});
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({success:false,error});
+    }
+})
