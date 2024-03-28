@@ -6,7 +6,12 @@ import mongoose from 'mongoose';
 
 export const getOverallSubjectReport = asyncHandler(async(req,res)=> {
     try {
-        const subjectReport = await SubjectTime.find({}).populate("subject").populate("student");
+        const subjectReport = await SubjectTime.find({})
+        .populate("subject")
+        .populate({
+            path:'student',
+            populate:{path:'school'}
+        }).exec();
         return res.status(200).json({success:true,subjectReport});
     } catch (error) {
         console.log(error);
