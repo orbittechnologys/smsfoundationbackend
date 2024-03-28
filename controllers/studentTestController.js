@@ -135,6 +135,17 @@ export const getLearningReportForSchool = asyncHandler(async (req,res) => {
                 $unwind:"$student" // Performs same as populate()
             },
             {
+                $lookup: {
+                    from:"schools",
+                    localField:"student.school",
+                    foreignField:"_id",
+                    as:"school"
+                }
+            },
+            {
+                $unwind:"$school"
+            },
+            {
                 $lookup:{
                     from:"tests", //name of collection in mongo db
                     localField:"test",

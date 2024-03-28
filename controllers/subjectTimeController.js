@@ -51,6 +51,17 @@ export const getSubjectReportOfSchool = asyncHandler(async(req,res)=> {
             },
             {
                 $lookup: {
+                    from:"schools",
+                    localField:"student.school",
+                    foreignField:"_id",
+                    as:"school"
+                }
+            },
+            {
+                $unwind:"$school"
+            },
+            {
+                $lookup: {
                     from: "subjects", // Name of the subjects collection
                     localField: "subject",
                     foreignField: "_id",
