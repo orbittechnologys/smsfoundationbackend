@@ -6,6 +6,8 @@ export const addChapter = asyncHandler(async (req,res)=> {
     try {
         const {chapterUrl,audioUrl,videoUrl,subjectId,name,desc} = req.body;
 
+        console.log(audioUrl,videoUrl);
+
         const subjectDoc = await Subject.findById(subjectId);
 
         if(!subjectDoc){
