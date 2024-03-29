@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 
 const chapterSchema = mongoose.Schema({
     chapterUrl:{type:String,required:true,unique:true},
+    audioUrl:{type:String,},
+    videoUrl:{type:String}, 
     name:{type:String},
     desc:{type:String},
     subject:{type:mongoose.Schema.Types.ObjectId, ref:"subject"},
