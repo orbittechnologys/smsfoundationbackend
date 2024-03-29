@@ -106,3 +106,31 @@ export const getChapterTimeForStudent = asyncHandler(async (req,res)=> {
         return res.status(500).json(error);
     }
 })
+
+export const getChapterTime = asyncHandler(async (req,res) => {
+
+    try {
+        const {studentId,chapterId} = req.body;
+
+    const studentDoc = await Student.findById(studentId);
+    if(!studentDoc){
+        console.log("Invalid student id:"+studentId);
+        return res.status(400).json({success:false,msg:"Invalid student id:"+studentId})
+    }
+
+    const chapterDoc = await Chapter.findById(chapterId);
+    if(!chapterDoc){
+        console.log("Invalid chapter id:"+chapterId);
+        return res.status(400).json({success:false,msg:"Invalid chapter id:"+chapterId});
+    }
+
+    const chapterTime = await ChapterTime.findOne({chapter:chapterId,student:studentId});
+
+    return res.status(200).json({success:true,chapterTime});
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({success:false,error})
+    }
+    
+})
