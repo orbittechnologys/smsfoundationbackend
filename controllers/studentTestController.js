@@ -86,7 +86,7 @@ export const getTestReport = asyncHandler(async (req,res)=> {
         const testReport = await studentTest.find({})
         .populate({
             path:'student',
-            populate:{path:'school'}
+            populate:{path:'school'} 
         })
         .populate("test").exec();
         return res.status(200).json({success:true,testReport});

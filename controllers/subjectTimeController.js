@@ -10,7 +10,7 @@ export const getOverallSubjectReport = asyncHandler(async(req,res)=> {
         .populate("subject")
         .populate({
             path:'student',
-            populate:{path:'school'}
+            populate:{path:'school'} 
         }).exec();
         return res.status(200).json({success:true,subjectReport});
     } catch (error) {
