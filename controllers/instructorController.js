@@ -51,3 +51,13 @@ export const getInstructorByUserId = asyncHandler(async (req,res)=> {
         return res.status(500).json({success:false,error});
     }
 })
+
+export const getAllInstructor = asyncHandler ( async (req,res) => {
+    try {
+        const instructors = await Instructor.find({}).populate("school").exec();
+        return res.status(200).json({success:true,instructors});
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({success:false,error});
+    }
+})
