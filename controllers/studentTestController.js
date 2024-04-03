@@ -211,3 +211,85 @@ export const getTestReportCSV = asyncHandler(async (req,res) => {
         return res.status(500).json({success:false,error})
     }
 })
+
+export const getTestReportSchoolCSV = asyncHandler(async (req,res) => {
+    try {
+        const schoolId = req.params.schoolId;
+        const schoolDoc = await School.findById(schoolId);
+        if(!schoolDoc){
+            console.log("Invalid school id "+schoolId);
+            return res.status(400).json({success:false,msg:"Invalid school id "+schoolId});
+        }
+
+        const objectIdSchoolId = new mongoose.Types.ObjectId(schoolId);
+
+        const testReport = await studentTest.aggregate([
+            {
+                $lookup:{
+                    from:"students", // name of the collection in mongo db
+                    localField:"student",
+                    foreignField:"_id",
+                    as:"student"
+                }
+            },// performs left outer join on students
+            {
+                $match:{
+                    "student.school":objectIdSchoolId
+                }
+            }, //Performs matching i,e. matches student document's school with schoolId
+            {
+                $unwind:"$student" // Performs same as populate()
+            },
+            {
+                $lookup: {
+                    from:"schools",
+                    localField:"student.school",
+                    foreignField:"_id",
+                    as:"school"
+                }
+            },
+            {
+                $unwind:"$school"
+            },
+            {
+                $lookup:{
+                    from:"tests", //name of collection in mongo db
+                    localField:"test",
+                    foreignField:"_id",
+                    as:"test"
+                }
+            },
+            {
+                $unwind:"$test"
+            }
+        ])
+
+        const csvData = testReport.map(item => ({
+            studentId: item.student._id,
+            studentFirstName: item.student.firstName,
+            studentLastName: item.student.lastName,
+            rollNo: item.student.rollNo,
+            standard: item.student.standard,
+            studentSyllabus: item.student.syllabus,
+            studentMedium: item.student.medium,
+            schoolName: item.school?.name,
+            schoolDistrict: item.school?.district,
+            pincode:item.school?.pincode,
+            testName: item.test.name,
+            questions:item.test.noOfQuestions,
+            totalMarks:item.test.totalMarks,
+            marksScored: item.marks,
+        }));
+
+        const csv = parse(csvData,
+             { fields: ["studentId", "studentFirstName", "studentLastName", "rollNo", "standard", "studentSyllabus", "studentMedium", "schoolName", "schoolDistrict", "pincode", "testName", "questions", "totalMarks", "marksScored"] });
+
+        res.header('Content-Type', 'text/csv');
+        res.attachment('testReportSchool.csv');
+        return res.send(csv);
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({success:false,error});
+    }
+})
