@@ -5,6 +5,7 @@ import ChapterTime from "../schemas/chapterTimeSchema.js";
 import studentTest from "../schemas/studentTestSchema.js";
 import School from '../schemas/schoolSchema.js';
 import mongoose from 'mongoose';
+import { parse } from "json2csv";
 
 export const submitTest = asyncHandler(async (req,res)=> {
     try {
@@ -111,7 +112,7 @@ export const getTestResults = asyncHandler(async (req,res)=>{
     }
 })
 
-export const getLearningReportForSchool = asyncHandler(async (req,res) => {
+export const getTestReportForSchool = asyncHandler(async (req,res) => {
     try {
         const schoolId = req.params.schoolId;
         const schoolDoc = await School.findById(schoolId);
@@ -169,5 +170,44 @@ export const getLearningReportForSchool = asyncHandler(async (req,res) => {
     } catch (error) {
        console.log(error);
        return res.status(500).json({success:false,error}); 
+    }
+})
+
+export const getTestReportCSV = asyncHandler(async (req,res) => {
+    try {
+        const testReport = await studentTest.find({})
+        .populate({
+            path:'student',
+            populate:{path:'school'} 
+        })
+        .populate("test").exec();
+
+        const csvData = testReport.map(item => ({
+            studentId: item.student._id,
+            studentFirstName: item.student.firstName,
+            studentLastName: item.student.lastName,
+            rollNo: item.student.rollNo,
+            standard: item.student.standard,
+            studentSyllabus: item.student.syllabus,
+            studentMedium: item.student.medium,
+            schoolName: item.student.school?.name,
+            schoolDistrict: item.student.school?.district,
+            pincode:item.student.school?.pincode,
+            testName: item.test.name,
+            questions:item.test.noOfQuestions,
+            totalMarks:item.test.totalMarks,
+            marksScored: item.marks,
+        }));
+
+        const csv = parse(csvData,
+             { fields: ["studentId", "studentFirstName", "studentLastName", "rollNo", "standard", "studentSyllabus", "studentMedium", "schoolName", "schoolDistrict", "pincode", "testName", "questions", "totalMarks", "marksScored"] });
+
+        res.header('Content-Type', 'text/csv');
+        res.attachment('testReport.csv');
+        return res.send(csv);
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({success:false,error})
     }
 })
