@@ -3,6 +3,7 @@ import SubjectTime from "../schemas/subjectTimeSchema.js";
 import School from '../schemas/schoolSchema.js';
 import Student from '../schemas/studentSchema.js';
 import mongoose from 'mongoose';
+import { parse } from "json2csv";
 
 export const getOverallSubjectReport = asyncHandler(async(req,res)=> {
     try {
@@ -83,5 +84,43 @@ export const getSubjectReportOfSchool = asyncHandler(async(req,res)=> {
     } catch (error) {
         console.log(error);
         return res.status(500).json({success:false,error});
+    }
+})
+
+export const getSubjectReportCSV = asyncHandler(async(req,res)=> {
+    try {
+        const subjectReport = await SubjectTime.find({})
+        .populate("subject")
+        .populate({
+            path:'student',
+            populate:{path:'school'} 
+        }).exec();
+
+        const csvData = subjectReport.map(item => ({
+            studentId: item.student._id,
+            studentFirstName: item.student.firstName,
+            studentLastName: item.student.lastName,
+            rollNo: item.student.rollNo,
+            standard: item.student.standard,
+            studentSyllabus: item.student.syllabus,
+            studentMedium: item.student.medium,
+            schoolName: item.student.school?.name,
+            schoolDistrict: item.student.school?.district,
+            pincode:item.student.school?.pincode,
+            subjectName: item.subject.name,
+            subjectStandard: item.subject.standard,
+            subjectSyllabus: item.subject.syllabus,
+            subjectMedium: item.subject.medium,
+            timeSpent: item.time
+        }));
+
+        const csv = parse(csvData, { fields: ["studentId", "studentFirstName", "studentLastName", "rollNo", "standard", "studentSyllabus", "studentMedium", "schoolName", "schoolDistrict", "pincode", "subjectName", "subjectStandard", "subjectSyllabus", "subjectMedium", "timeSpent"] });
+
+        res.header('Content-Type', 'text/csv');
+        res.attachment('subjectReport.csv');
+        return res.send(csv);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({success:false,error})
     }
 })
