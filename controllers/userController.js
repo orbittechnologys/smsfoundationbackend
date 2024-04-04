@@ -18,18 +18,6 @@ export const register = asyncHandler(async (req, res) => {
       role,
     });
 
-    // if (user) {
-    //   generateToken(res, user._id)
-    //   res.status(200).json({
-    //     _id: user._id,
-    //     username: user.username,
-    //     email: user.email,
-    //     password: user.password,
-    //   })
-    // } else {
-    //   res.status(400).json("Invalid user data");
-    // }
-
     return res.status(200).json(user);
   } catch (error) {
     return res.status(500).json(error);
