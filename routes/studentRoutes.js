@@ -1,5 +1,5 @@
 import express from 'express';
-import { addStudent, getStudentByUserId , updateStudent, getStudent, getStudentsBySchool, getStudentsQuery, getStudentsQueryViaSchool, resetPassword} from '../controllers/studentController.js';
+import { addStudent, getStudentByUserId , updateStudent, getStudent, getStudentsBySchool, getStudentsQuery, getStudentsQueryViaSchool, resetPassword, getAllStudents} from '../controllers/studentController.js';
 
 const studentRouter =express.Router();
 
@@ -12,5 +12,6 @@ studentRouter.route("/getStudentsBySchool/:schoolId").get(getStudentsBySchool);
 studentRouter.route("/getStudentsQuery/:query").get(getStudentsQuery);
 studentRouter.route("/getStudentQuerySchool").get(getStudentsQueryViaSchool);
 studentRouter.route("/resetPassword").post(resetPassword);
+studentRouter.route("/getAll").get(getAllStudents);
 
 export default studentRouter;

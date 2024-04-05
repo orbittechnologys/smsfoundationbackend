@@ -171,3 +171,13 @@ export const resetPassword = asyncHandler(async (req,res) => {
         return res.status(500).json({success:false,error});
     }
 })
+
+export const getAllStudents = asyncHandler(async (req,res) => {
+    try {
+        const students = await Student.find({});
+        return res.status(200).json({success:true,students});
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({success:false,error});
+    }
+})
