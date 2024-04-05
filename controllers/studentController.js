@@ -174,7 +174,7 @@ export const resetPassword = asyncHandler(async (req,res) => {
 
 export const getAllStudents = asyncHandler(async (req,res) => {
     try {
-        const students = await Student.find({});
+        const students = await Student.find({}).populate("school").exec();
         return res.status(200).json({success:true,students});
     } catch (error) {
         console.log(error);
