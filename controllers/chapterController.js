@@ -78,9 +78,9 @@ export const getChapterQuery = asyncHandler(async (req,res) => {
         
         const chapters = await Chapter.find({
             name:{$regex :regexPattern}
-          });
+          }).populate("subject").exec();
 
-        return res.status(200).json({success:true,chapters}).populate("subject").exec();
+        return res.status(200).json({success:true,chapters});
         
     } catch (error) {
         console.log(error);
