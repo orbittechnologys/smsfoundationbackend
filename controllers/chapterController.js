@@ -70,3 +70,20 @@ export const getChaptersBySubject = asyncHandler(async (req,res)=> {
         return res.status(500).json({success:false,error});
     }
 })
+
+export const getChapterQuery = asyncHandler(async (req,res) => {
+    try {
+        const query = req.params.query
+        const regexPattern = new RegExp(query, "i");
+        
+        const chapters = await Chapter.find({
+            name:{$regex :regexPattern}
+          });
+
+        return res.status(200).json({success:true,chapters});
+        
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({success:false,error});
+    }
+})
