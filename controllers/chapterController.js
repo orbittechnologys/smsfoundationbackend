@@ -80,7 +80,7 @@ export const getChapterQuery = asyncHandler(async (req,res) => {
             name:{$regex :regexPattern}
           });
 
-        return res.status(200).json({success:true,chapters});
+        return res.status(200).json({success:true,chapters}).populate("subject").exec();
         
     } catch (error) {
         console.log(error);
