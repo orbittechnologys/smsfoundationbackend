@@ -13,7 +13,21 @@ export const getOverallSubjectReport = asyncHandler(async(req,res)=> {
             path:'student',
             populate:{path:'school'} 
         }).exec();
-        return res.status(200).json({success:true,subjectReport});
+                // Modify response structure
+                const modifiedSubjectReport = subjectReport.map((report) => ({
+                  _id: report._id,
+                  student: {
+                    ...report.student.toObject(),
+                    school: report.student.school._id, // Extract only school ID
+                  },
+                  subject: report.subject,
+                  time: report.time,
+                  __v: report.__v,
+                  school: report.student.school, // Add school details outside of student
+                }));
+        
+        
+        return res.status(200).json({success:true, subjectReport: modifiedSubjectReport});
     } catch (error) {
         console.log(error);
         return res.status(500).json({success:false,error})
