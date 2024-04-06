@@ -6,6 +6,7 @@ import studentTest from "../schemas/studentTestSchema.js";
 import School from '../schemas/schoolSchema.js';
 import mongoose from 'mongoose';
 import { parse } from "json2csv";
+import { getPercentage } from "../helpers/utils.js";
 
 export const submitTest = asyncHandler(async (req,res)=> {
     try {
@@ -101,6 +102,7 @@ export const getTestReport = asyncHandler(async (req,res)=> {
             marks: report.marks,
             __v: report.__v,
             school: report.student.school, // Add school details outside of student
+            percentage: getPercentage(report.marks,report.test.totalMarks)
           }));
 
         return res.status(200).json({success:true,testReport : modifiedTestReport});
