@@ -6,7 +6,7 @@ import User from "../schemas/userSchema.js";
 
 export const addStudent = asyncHandler(async (req,res)=> {
     try {
-        const {email,firstName,lastName,rollNo,standard,school,password, syllabus,medium} = req.body
+        const {email,phone,firstName,middleName, lastName,rollNo,standard,gender,school,password, syllabus,medium} = req.body
 
         const userDoc = await User.findOne({email});
         if(userDoc){
@@ -24,6 +24,7 @@ export const addStudent = asyncHandler(async (req,res)=> {
             email,
             username:`${firstName} ${lastName}`,
             password,
+            phone,
             role:'STUDENT'
           });
 
@@ -33,11 +34,13 @@ export const addStudent = asyncHandler(async (req,res)=> {
             email,
             firstName,
             lastName,
+            middleName,
             rollNo,
             standard,
             syllabus,
             medium,
             school,
+            gender,
             user:user._id
           });
 

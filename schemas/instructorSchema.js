@@ -14,6 +14,7 @@ const instructorSchema = mongoose.Schema({
     phone:{type:String,unique:true}, //TODO : make this required in PROD
     school:{type:mongoose.Schema.Types.ObjectId, ref:"school"},
     medium:String,
+    gender:String,
     user:{type:mongoose.Schema.Types.ObjectId, ref:"users"}
   });
 

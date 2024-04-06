@@ -7,11 +7,13 @@ const subjectCompletionSchema = mongoose.Schema({
 
 const studentSchema = mongoose.Schema({
     firstName:{type:String},
+    middleName:{type:String},
     lastName:{type:String},
     rollNo:{type:String},
     standard:{type:Number},
     syllabus : {type:String},
     medium: {type:String},
+    gender:{type:String},
     subjectCompletion:[subjectCompletionSchema],
     school:{type:mongoose.Schema.Types.ObjectId, ref:"school"},
     user:{type:mongoose.Schema.Types.ObjectId, ref:"users"}

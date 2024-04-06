@@ -5,7 +5,7 @@ import User from '../schemas/userSchema.js';
 
 export const addInstructor = asyncHandler(async (req,res)=> {
     try {
-        const {firstName,middleName, lastName,phone,email,qualification, password,school,medium} = req.body;
+        const {firstName,middleName, lastName,phone,gender,email,qualification, password,school,medium} = req.body;
 
         const userDoc = await User.findOne({email});
         if(userDoc){
