@@ -90,7 +90,20 @@ export const getTestReport = asyncHandler(async (req,res)=> {
             populate:{path:'school'} 
         })
         .populate("test").exec();
-        return res.status(200).json({success:true,testReport});
+
+        const modifiedTestReport = testReport.map((report) => ({
+            _id: report._id,
+            student: {
+              ...report.student.toObject(),
+              school: report.student.school._id, // Extract only school ID
+            },
+            test: report.test,
+            marks: report.marks,
+            __v: report.__v,
+            school: report.student.school, // Add school details outside of student
+          }));
+
+        return res.status(200).json({success:true,testReport : modifiedTestReport});
     } catch (error) {
         console.log(error);
         return res.status(500).json({success:false,error})
