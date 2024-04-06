@@ -5,7 +5,7 @@ import User from '../schemas/userSchema.js';
 
 export const addInstructor = asyncHandler(async (req,res)=> {
     try {
-        const {firstName,lastName,email, password,school,medium} = req.body;
+        const {firstName,middleName, lastName,phone,email,qualification, password,school,medium} = req.body;
 
         const userDoc = await User.findOne({email});
         if(userDoc){
@@ -15,6 +15,7 @@ export const addInstructor = asyncHandler(async (req,res)=> {
         const user = await User.create({
             email,
             username:`${firstName} ${lastName}`,
+            phone,
             password,
             role:'INSTRUCTOR'
           });
@@ -24,6 +25,9 @@ export const addInstructor = asyncHandler(async (req,res)=> {
           const instructor = await Instructor.create({
             email,
             firstName,
+            middleName,
+            phone,
+            qualification,
             lastName,
             school,
             medium,

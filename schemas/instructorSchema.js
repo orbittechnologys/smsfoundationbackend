@@ -9,6 +9,9 @@ const instructorSchema = mongoose.Schema({
     },
     firstName: {type:String},
     lastName:String,
+    middleName:String,
+    qualification:String,
+    phone:{type:String,unique:true}, //TODO : make this required in PROD
     school:{type:mongoose.Schema.Types.ObjectId, ref:"school"},
     medium:String,
     user:{type:mongoose.Schema.Types.ObjectId, ref:"users"}

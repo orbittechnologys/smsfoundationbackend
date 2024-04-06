@@ -13,6 +13,7 @@ const userSchema = mongoose.Schema({
   },
   username:reqString,
   password: reqString,
+  phone : {type:String, unique:true},
   role:{
     type: String,
     enum: ["ADMIN", "STUDENT", "INSTRUCTOR"],
