@@ -113,7 +113,7 @@ export const getStudent = asyncHandler(async (req,res) => {
 export const getStudentsBySchool = asyncHandler(async (req,res) => {
     try {
         const schoolId = req.params.schoolId;
-        const students = await Student.find({school:schoolId});
+        const students = await Student.find({school:schoolId}).populate("school").exec();
         return res.status(200).json({success:true,students});
     } catch (error) {
         console.log(error);
