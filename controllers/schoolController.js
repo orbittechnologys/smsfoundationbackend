@@ -5,10 +5,10 @@ import Instructor from '../schemas/instructorSchema.js';
 
 export const addSchool = asyncHandler(async (req,res)=> {
     try {
-        const {name,principalName,address,district,pincode,internet, syllabus,medium} = req.body;
+        const {name,principalName,address,district,state,pincode,internet, syllabus,medium, projectName,partnerName} = req.body;
 
         const school = await School.create({
-            name,principalName,address,district,pincode,internet, syllabus,medium
+            name,principalName,address,district,state,pincode,internet, syllabus,medium, projectName,partnerName
           });
         
         console.log(school);
