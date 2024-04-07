@@ -66,7 +66,7 @@ export const getStudentByUserId = asyncHandler(async (req,res)=> {
 export const updateStudent = asyncHandler(async (req,res) => {
     try {
 
-        const {studentId,firstName,lastName,rollNo,standard, email } = req.body;
+        const {studentId,firstName,lastName,rollNo,standard, email, phone } = req.body;
         const studentDoc = await Student.findById(studentId);
         if(!studentDoc){
             console.log("Invalid student id "+studentId);
@@ -81,6 +81,7 @@ export const updateStudent = asyncHandler(async (req,res) => {
 
         await User.updateOne({_id:studentDoc.user},{
             email,
+            phone
         })
 
         console.log("Updated student Doc");
