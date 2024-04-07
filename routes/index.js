@@ -11,6 +11,8 @@ import questionRouter from './questionRoutes.js';
 import subjectTimeRouter from './subjectTimeRoutes.js';
 import studentTestRouter from './studentTestRoutes.js';
 import schoolRouter from './schoolRoutes.js'
+import mediumRouter from './mediumRoutes.js';
+import syllabusRouter from './syllabusRoutes.js';
 
 const router = expressRouter();
 
@@ -25,5 +27,7 @@ router.use("/question",questionRouter);
 router.use("/subjectTime",subjectTimeRouter);
 router.use("/studentTest",studentTestRouter);
 router.use("/school",schoolRouter);
+router.use("/medium",mediumRouter);
+router.use("/syllabus",syllabusRouter);
 
 export default router;
