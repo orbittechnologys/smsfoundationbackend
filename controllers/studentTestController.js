@@ -105,6 +105,8 @@ export const getTestReport = asyncHandler(async (req,res)=> {
             percentage: getPercentage(report.marks,report.test.totalMarks)
           }));
 
+
+
         return res.status(200).json({success:true,testReport : modifiedTestReport});
     } catch (error) {
         console.log(error);
@@ -176,6 +178,23 @@ export const getTestReportForSchool = asyncHandler(async (req,res) => {
             },
             {
                 $unwind:"$test"
+            },
+            {
+                $addFields: {
+                    "percentage": {
+                        $round: [{ // Round the result of the following operation
+                            $cond: {
+                                if: { $eq: ["$test.totalMarks", 0] }, // Check if totalMarks is 0
+                                then: 0, // If true (i.e., totalMarks is 0), set percentage to 0
+                                else: {
+                                    $multiply: [
+                                        { $divide: ["$marks", "$test.totalMarks"] }, 100
+                                    ]
+                                }
+                            }
+                        }, 2] // Specify rounding to 2 decimal places
+                    }
+                }
             }
         ])
 
