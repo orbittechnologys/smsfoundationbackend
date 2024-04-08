@@ -12,6 +12,9 @@ export const addQuestion = asyncHandler(async (req,res)=> {
             optionB,
             optionC,
             optionD,
+            optionE,
+            optionF,
+            pageRef,
             hint,
             answer,
             marks
@@ -30,6 +33,9 @@ export const addQuestion = asyncHandler(async (req,res)=> {
             optionB,
             optionC,
             optionD,
+            optionE,
+            optionF,
+            pageRef,
             hint,
             answer,
             marks
@@ -75,6 +81,9 @@ export const editQuestion = asyncHandler(async (req,res)=> {
             optionB,
             optionC,
             optionD,
+            optionE,
+            optionF,
+            pageRef,
             hint,
             answer
         } = req.body;
@@ -91,6 +100,9 @@ export const editQuestion = asyncHandler(async (req,res)=> {
             optionB,
             optionC,
             optionD,
+            optionE,
+            optionF,
+            pageRef,
             hint,
             answer
         })

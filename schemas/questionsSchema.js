@@ -7,6 +7,9 @@ const questionSchema = mongoose.Schema({
     optionB:{type:String},
     optionC:{type:String},
     optionD:{type:String},
+    optionE:{type:String},
+    optionF:{type:String},
+    pageRef:{type:Number,default:1},
     hint:{type:String},
     answer:{type:String,required:true}, // [A,B,C,D],
     marks:{type:Number,default:1}
