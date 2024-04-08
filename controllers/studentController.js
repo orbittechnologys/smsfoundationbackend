@@ -189,3 +189,43 @@ export const getAllStudents = asyncHandler(async (req,res) => {
         return res.status(500).json({success:false,error});
     }
 })
+
+
+export const fetchCountGenders = async (req, res) => {
+    try {
+        const { district } = req.params; // Assuming district is passed in req.params
+        console.log('District:', district);
+    
+        // Aggregate pipeline to group students by gender and district and count them
+        const genderCounts = await Student.aggregate([
+            {
+              $lookup: {
+                from: 'schools',
+                localField: 'school',
+                foreignField: '_id',
+                as: 'school'
+              }
+            },
+            { $unwind: '$school' },
+            { 
+              $match: { 
+                'school.district': district 
+              } 
+            },
+            { 
+              $group: { 
+                _id: '$gender', 
+                count: { $sum: 1 } 
+              } 
+            }
+          ]);
+        
+        console.log('Gender Counts:', genderCounts);
+    
+        res.status(200).json(genderCounts); // Send response with counts
+
+    } catch (error) {
+      console.error('Error fetching gender counts:', error);
+      res.status(500).json({ message: 'Internal server error', error });
+    }
+  };

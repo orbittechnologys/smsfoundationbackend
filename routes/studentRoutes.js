@@ -1,5 +1,5 @@
 import express from 'express';
-import { addStudent, getStudentByUserId , updateStudent, getStudent, getStudentsBySchool, getStudentsQuery, getStudentsQueryViaSchool, resetPassword, getAllStudents} from '../controllers/studentController.js';
+import { addStudent, getStudentByUserId , updateStudent, getStudent, getStudentsBySchool, getStudentsQuery, getStudentsQueryViaSchool, resetPassword, getAllStudents, fetchCountGenders} from '../controllers/studentController.js';
 
 const studentRouter =express.Router();
 
@@ -13,5 +13,6 @@ studentRouter.route("/getStudentsQuery/:query").get(getStudentsQuery);
 studentRouter.route("/getStudentQuerySchool").get(getStudentsQueryViaSchool);
 studentRouter.route("/resetPassword").post(resetPassword);
 studentRouter.route("/getAll").get(getAllStudents);
+studentRouter.route("/genderRatio/:district").get(fetchCountGenders);
 
 export default studentRouter;
