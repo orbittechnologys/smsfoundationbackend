@@ -327,3 +327,18 @@ export const getTestReportSchoolCSV = asyncHandler(async (req,res) => {
         return res.status(500).json({success:false,error});
     }
 })
+
+export const fetchLatestStudentTests = async (req, res) => {
+    try {
+      const { studentId } = req.params; // Assuming studentId is passed in req.params
+  
+      const latestTests = await studentTest.find({ student: studentId })
+        .sort({ updatedAt: -1 }) // Sort by updatedAt in descending order
+        .limit(5); // Limit to 5 documents
+  
+      res.status(200).json(latestTests);
+    } catch (error) {
+      console.error('Error fetching latest student tests:', error);
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  };
