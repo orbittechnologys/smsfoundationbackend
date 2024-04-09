@@ -332,7 +332,7 @@ export const fetchLatestStudentTests = async (req, res) => {
     try {
       const { studentId } = req.params; // Assuming studentId is passed in req.params
   
-      const latestTests = await studentTest.find({ student: studentId })
+      const latestTests = await studentTest.find({ student: studentId }).populate("test")
         .sort({ updatedAt: -1 }) // Sort by updatedAt in descending order
         .limit(5); // Limit to 5 documents
   
