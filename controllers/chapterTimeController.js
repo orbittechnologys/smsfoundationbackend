@@ -141,7 +141,7 @@ export const fetchLatestChapterTime = async (req, res) => {
   
       const latestChapter = await ChapterTime.find({ student: studentId }).populate("chapter")
         .sort({ updatedAt: -1 }) // Sort by updatedAt in descending order
-        .limit(5); // Limit to 5 documents
+        .limit(4); // Limit to 5 documents
   
       res.status(200).json(latestChapter);
     } catch (error) {
