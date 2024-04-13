@@ -1,6 +1,7 @@
 import asyncHandler from "express-async-handler";
 import Instructor from "../schemas/instructorSchema.js";
 import User from '../schemas/userSchema.js';
+import Student from "../schemas/studentSchema.js";
 
 
 export const addInstructor = asyncHandler(async (req,res)=> {
@@ -85,6 +86,29 @@ export const resetPassword = asyncHandler(async (req,res) => {
 
         return res.status(200).json({success:true,msg:"Password updated successfully"})
 
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({success:false,error});
+    }
+})
+
+export const fetchStudentsByInstructorId = asyncHandler(async (req,res) => {
+    try {
+        const instructorId = req.params.instructorId;
+        const instructor = await Instructor.findById(instructorId).select('school').exec();
+        console.log(instructor);
+
+        if (!instructor) {
+            return res.status(404).json({ success: false, message: 'Instructor not found' });
+        }
+
+        // Step 2: Use the array of school IDs to find all students who are in those schools
+        const students = await Student.find({ 
+            school: { $in: instructor.school } 
+        }).exec();
+
+        // Respond with the list of students found
+        return res.status(200).json({ success: true, students });
     } catch (error) {
         console.log(error);
         return res.status(500).json({success:false,error});

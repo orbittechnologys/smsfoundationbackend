@@ -11,8 +11,8 @@ const instructorSchema = mongoose.Schema({
     lastName:String,
     middleName:String,
     qualification:String,
-    phone:{type:String,unique:true}, //TODO : make this required in PROD
-    school:{type:mongoose.Schema.Types.ObjectId, ref:"school"},
+    phone:{type:String,unique:true, required:true},
+    school: [{ type: mongoose.Schema.Types.ObjectId, ref: "school" }], // 1 Instructor has multiple schools
     medium:String,
     gender:String,
     user:{type:mongoose.Schema.Types.ObjectId, ref:"users"}
