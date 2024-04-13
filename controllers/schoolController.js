@@ -2,6 +2,7 @@ import asyncHandler from "express-async-handler";
 import School from '../schemas/schoolSchema.js';
 import Student from '../schemas/studentSchema.js';
 import Instructor from '../schemas/instructorSchema.js';
+import { parse } from "json2csv";
 
 export const addSchool = asyncHandler(async (req,res)=> {
     try {
@@ -64,6 +65,21 @@ export const getSchoolByDistrictSyllabusMedium = asyncHandler(async (req,res) =>
         const schools = await School.find({district,syllabus,medium});
 
         return res.status(200).json({success:true,schools});
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({success:false,error});
+    }
+})
+
+export const getAllSchoolsCSV = asyncHandler(async (req,res) => {
+    try {
+        const schools = await School.find({});
+        const csv = parse(schools, { fields: ["name", "principalName", "address", "district", "state", "pincode", "syllabus", "medium", "internet", "projectName", "partnerName", "createdAt", "updatedAt"] });
+
+        res.header('Content-Type', 'text/csv');
+        res.attachment('allSchools.csv');
+        return res.send(csv);
+
     } catch (error) {
         console.log(error);
         return res.status(500).json({success:false,error});
