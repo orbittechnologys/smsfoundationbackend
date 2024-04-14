@@ -2,6 +2,7 @@ import asyncHandler from "express-async-handler";
 import Instructor from "../schemas/instructorSchema.js";
 import User from '../schemas/userSchema.js';
 import Student from "../schemas/studentSchema.js";
+import { parse } from "json2csv";
 
 
 export const addInstructor = asyncHandler(async (req,res)=> {
@@ -60,7 +61,35 @@ export const getInstructorByUserId = asyncHandler(async (req,res)=> {
 export const getAllInstructor = asyncHandler ( async (req,res) => {
     try {
         const instructors = await Instructor.find({}).populate("school").exec();
-        return res.status(200).json({success:true,instructors});
+        // Create a new array that will hold the transformed instructor entries
+        let flattenedInstructors = [];
+        
+        // Iterate through each instructor
+        instructors.forEach(instructor => {
+            if (instructor.school && instructor.school.length > 0) {
+                // If the instructor is associated with schools, create an entry for each school
+                instructor.school.forEach(school => {
+                    // Clone the instructor data and replace the school array with the single school entry
+                    let instructorEntry = {
+                        ...instructor._doc, // Accessing the mongoose document data
+                        school: school
+                    };
+                    // Add the new entry to the flattened list
+                    flattenedInstructors.push(instructorEntry);
+                });
+            } else {
+                // If no schools are associated, push the instructor as is but with an empty school
+                let instructorEntry = {
+                    ...instructor._doc,
+                    school: null
+                };
+                flattenedInstructors.push(instructorEntry);
+            }
+        });
+
+        // Return the transformed list
+        return res.status(200).json({ success: true, instructors: flattenedInstructors });
+
     } catch (error) {
         console.log(error);
         return res.status(500).json({success:false,error});
@@ -109,6 +138,48 @@ export const fetchStudentsByInstructorId = asyncHandler(async (req,res) => {
 
         // Respond with the list of students found
         return res.status(200).json({ success: true, students });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({success:false,error});
+    }
+})
+
+
+export const fetchAllInstructorsCSV = asyncHandler(async (req,res) => {
+    try {
+        
+        const instructors = await Instructor.find({}).populate("school").exec();
+        // Create a new array that will hold the transformed instructor entries
+        let flattenedInstructors = [];
+        
+        // Iterate through each instructor
+        instructors.forEach(instructor => {
+            if (instructor.school && instructor.school.length > 0) {
+                // If the instructor is associated with schools, create an entry for each school
+                instructor.school.forEach(school => {
+                    // Clone the instructor data and replace the school array with the single school entry
+                    let instructorEntry = {
+                        ...instructor._doc, // Accessing the mongoose document data
+                        school: school
+                    };
+                    // Add the new entry to the flattened list
+                    flattenedInstructors.push(instructorEntry);
+                });
+            } else {
+                // If no schools are associated, push the instructor as is but with an empty school
+                let instructorEntry = {
+                    ...instructor._doc,
+                    school: null
+                };
+                flattenedInstructors.push(instructorEntry);
+            }
+        });
+
+        const csv = parse(flattenedInstructors, { fields: ["firstName", "middleName", "lastName", "email", "phone", "qualification",  "medium", "school.name","school.district","school.state","school.pincode","school.syllabus","school.medium"] });
+
+        res.header('Content-Type', 'text/csv');
+        res.attachment('allStudents.csv');
+        return res.send(csv);
     } catch (error) {
         console.log(error);
         return res.status(500).json({success:false,error});
