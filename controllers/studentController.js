@@ -1,7 +1,7 @@
 import asyncHandler from "express-async-handler";
 import Student from "../schemas/studentSchema.js";
 import User from "../schemas/userSchema.js";
-
+import { parse } from "json2csv";
 
 
 export const addStudent = asyncHandler(async (req,res)=> {
@@ -229,3 +229,18 @@ export const fetchCountGenders = async (req, res) => {
       res.status(500).json({ message: 'Internal server error', error });
     }
   };
+
+
+ export const fetchAllStudentsCSV = async (req,res) => {
+    try {
+        const students = await Student.find({}).populate("school").exec();
+        const csv = parse(students, { fields: ["firstName", "middleName", "lastName", "rollNo", "standard", "syllabus",  "medium", "gender", "school.name", "school.state","school.district","school.pincode","school.address"] });
+
+        res.header('Content-Type', 'text/csv');
+        res.attachment('allStudents.csv');
+        return res.send(csv);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ message: 'Internal server error', error });
+    }
+ }
