@@ -1,5 +1,13 @@
 import express from 'express';
-import { addStudent, getStudentByUserId , updateStudent, getStudent, getStudentsBySchool, getStudentsQuery, getStudentsQueryViaSchool, resetPassword, getAllStudents, fetchCountGenders, fetchAllStudentsCSV} from '../controllers/studentController.js';
+import { addStudent, getStudentByUserId , updateStudent, getStudent, getStudentsBySchool, getStudentsQuery, getStudentsQueryViaSchool, resetPassword, getAllStudents, fetchCountGenders, fetchAllStudentsCSV, uploadStudentsCSV} from '../controllers/studentController.js';
+import multer from 'multer';
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, 'uploads/'),
+    filename: (req, file, cb) => cb(null, `${Date.now()}-${file.originalname}`)
+});
+
+const uploadCsv = multer({ storage });
 
 const studentRouter =express.Router();
 
@@ -15,5 +23,6 @@ studentRouter.route("/resetPassword").post(resetPassword);
 studentRouter.route("/getAll").get(getAllStudents);
 studentRouter.route("/genderRatio/:district").get(fetchCountGenders);
 studentRouter.route("/getStudentsCSV").get(fetchAllStudentsCSV);
+studentRouter.route('/uploadStudentsCSV/:schoolId').post(uploadCsv.single('file'), uploadStudentsCSV);
 
 export default studentRouter;

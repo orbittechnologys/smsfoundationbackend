@@ -2,6 +2,8 @@ import asyncHandler from "express-async-handler";
 import Student from "../schemas/studentSchema.js";
 import User from "../schemas/userSchema.js";
 import { parse } from "json2csv";
+import fs from 'fs';
+import csv from 'csv-parser'
 
 
 export const addStudent = asyncHandler(async (req,res)=> {
@@ -244,3 +246,55 @@ export const fetchCountGenders = async (req, res) => {
         return res.status(500).json({ message: 'Internal server error', error });
     }
  }
+
+ export const uploadStudentsCSV = asyncHandler(async (req, res) => {
+    if (!req.file) {
+        return res.status(400).json({ success: false, message: "No file uploaded." });
+    }
+
+    const results = [];
+    const schoolId = req.params.schoolId;
+    console.log(schoolId);
+
+    fs.createReadStream(req.file.path)
+        .pipe(csv())
+        .on('data', (data) => results.push(data))
+        .on('end', async () => {
+            try {
+                for (const studentData of results) {
+                    const { email, phone, firstName, middleName, lastName, rollNo, standard, gender,  password, syllabus, medium } = studentData;
+                    console.log(studentData);
+                    const userDoc = await User.findOne({ email });
+                    if (!userDoc) {
+                        const user = await User.create({
+                            email,
+                            username: `${firstName} ${lastName}`,
+                            password,
+                            phone,
+                            role: 'STUDENT'
+                        });
+
+                        await Student.create({
+                            email,
+                            firstName,
+                            lastName,
+                            middleName,
+                            rollNo,
+                            standard,
+                            syllabus,
+                            medium,
+                            school: schoolId,
+                            gender,
+                            user: user._id
+                        });
+                    }
+                }
+                fs.unlinkSync(req.file.path); // Remove the file after processing
+                res.status(200).json({ success: true, message: "Students added successfully." });
+            } catch (error) {
+                console.error(error);
+                fs.unlinkSync(req.file.path); // Remove the file after processing
+                res.status(500).json({ success: false, error });
+            }
+        });
+});
