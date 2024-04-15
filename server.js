@@ -4,7 +4,8 @@ import cors from "cors";
 import mongooseConnection from "./mongo.js";
 import appRoutes from './routes/index.js'
 import fs from 'fs';
-
+import dotenv from 'dotenv'
+dotenv.config();
 
 const port = process.env.PORT || 4000;
 

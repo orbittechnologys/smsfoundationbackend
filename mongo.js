@@ -7,7 +7,7 @@ dbConnection.once("open", () => console.log("Connected to DB!"));
 const mongooseConnection = async()=>{
 
     try{
-        const conn = await mongoose.connect("mongodb+srv://aftabemir123:XNxBrpXBPzRv5clM@cluster0.acbx9fb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
+        const conn = await mongoose.connect(process.env.MONGO_URI);
         console.log(`MongoDB Connected: ${conn.connection.host}`);
     }catch(error){
         console.log(`error :${error.message}`)
