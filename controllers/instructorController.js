@@ -201,7 +201,7 @@ export const fetchInstructorById = asyncHandler(async (req,res) => {
 
 export const editInstructor = asyncHandler(async (req,res) => {
     try {
-        const  {instructorId, firstName,middleName, lastName,phone,gender,email,qualification, password,school,medium} = req.body;
+        const  {instructorId, firstName,middleName, lastName,phone,gender,email,qualification,school,medium} = req.body;
 
         const instructorDoc = await Instructor.findById(instructorId);
         if(!instructorDoc){
@@ -213,7 +213,6 @@ export const editInstructor = asyncHandler(async (req,res) => {
         userDoc.email = email;
         userDoc.username = firstName+" "+middleName+" "+lastName;
         userDoc.phone=phone;
-        userDoc.password = password;
 
         await userDoc.save();
 
