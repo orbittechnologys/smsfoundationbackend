@@ -32,6 +32,7 @@ export const addInstructor = asyncHandler(async (req,res)=> {
             qualification,
             lastName,
             school,
+            gender,
             medium,
             user:user._id
           });
@@ -180,6 +181,58 @@ export const fetchAllInstructorsCSV = asyncHandler(async (req,res) => {
         res.header('Content-Type', 'text/csv');
         res.attachment('allStudents.csv');
         return res.send(csv);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({success:false,error});
+    }
+})
+
+export const fetchInstructorById = asyncHandler(async (req,res) => {
+    try {
+        const instructorId = req.params.id;
+        const instructor = await Instructor.findById(instructorId).populate("user").exec();
+
+        return res.status(200).json({success:true,instructor});
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({success:false,error});
+    }
+})
+
+export const editInstructor = asyncHandler(async (req,res) => {
+    try {
+        const  {instructorId, firstName,middleName, lastName,phone,gender,email,qualification, password,school,medium} = req.body;
+
+        const instructorDoc = await Instructor.findById(instructorId);
+        if(!instructorDoc){
+            return res.status(400).json({success:false, msg:"No such instructor id found "+instructorId});
+        } 
+
+        const userDoc = await User.findById(instructorDoc.user);
+
+        userDoc.email = email;
+        userDoc.username = firstName+" "+middleName+" "+lastName;
+        userDoc.phone=phone;
+        userDoc.password = password;
+
+        await userDoc.save();
+
+        await Instructor.updateOne({
+            _id:instructorId
+        },{
+            email,
+            firstName,
+            middleName,
+            phone,
+            qualification,
+            gender,
+            lastName,
+            school,
+            medium,
+        })
+
+        return res.status(200).json({success:true,msg:"Edited Instructor successfully"});
+
     } catch (error) {
         console.log(error);
         return res.status(500).json({success:false,error});
