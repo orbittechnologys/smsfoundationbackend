@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 const schoolSchema = mongoose.Schema({
     name:{type:String},
     principalName:{type:String},
+    principalContact:{type:String},
     address:{type:String},
     district:{type:String},
     state:{type:String},

@@ -6,10 +6,10 @@ import { parse } from "json2csv";
 
 export const addSchool = asyncHandler(async (req,res)=> {
     try {
-        const {name,principalName,address,district,state,pincode,internet, syllabus,medium, projectName,partnerName} = req.body;
+        const {name,principalName,principalContact,address,district,state,pincode,internet, syllabus,medium, projectName,partnerName} = req.body;
 
         const school = await School.create({
-            name,principalName,address,district,state,pincode,internet, syllabus,medium, projectName,partnerName
+            name,principalName,principalContact,address,district,state,pincode,internet, syllabus,medium, projectName,partnerName
           });
         
         console.log(school);
