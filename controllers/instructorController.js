@@ -190,7 +190,7 @@ export const fetchAllInstructorsCSV = asyncHandler(async (req,res) => {
 export const fetchInstructorById = asyncHandler(async (req,res) => {
     try {
         const instructorId = req.params.id;
-        const instructor = await Instructor.findById(instructorId).populate("user").exec();
+        const instructor = await Instructor.findById(instructorId).populate("user").populate("school").exec();
 
         return res.status(200).json({success:true,instructor});
     } catch (error) {
