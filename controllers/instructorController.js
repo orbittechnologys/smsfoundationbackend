@@ -134,7 +134,7 @@ export const fetchStudentsByInstructorId = asyncHandler(async (req,res) => {
         // Step 2: Use the array of school IDs to find all students who are in those schools
         const students = await Student.find({ 
             school: { $in: instructor.school } 
-        }).populate('school').exec();
+        }).populate('school').populate("user").exec();
 
         // Respond with the list of students found
         return res.status(200).json({ success: true, students });
