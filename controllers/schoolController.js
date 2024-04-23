@@ -22,6 +22,42 @@ export const addSchool = asyncHandler(async (req,res)=> {
     }
 })
 
+export const getSchoolById = asyncHandler(async (req,res)=> {
+    try {
+        const schoolId = req.params.id;
+        const school = await School.findById(schoolId);
+
+        return res.status(200).json({
+            success:true,school
+        })
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({success:false,error});
+    }
+})
+
+export const editSchool = asyncHandler(async (req,res) => {
+    try {
+        const {schoolId,name,principalName,principalContact,address,district,state,pincode,internet, syllabus,medium, projectName,partnerName} = req.body;
+        const schoolDoc = await School.findById(schoolId);
+        if(!schoolDoc){
+            return res.status(400).json({success:false,msg:"Invalid school id "+schoolId});
+        }
+
+        await School.updateOne({
+            _id:schoolId
+        },{
+            name,principalName,principalContact,address,district,state,pincode,internet, syllabus,medium, projectName,partnerName
+        })
+
+        return res.status(200).json({success:true,msg:"School updated successfully"});
+
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({success:false,error});
+    }
+})
+
 export const getAllSchool = asyncHandler(async (req,res)=> {
     try {
         const schools = await School.find({});

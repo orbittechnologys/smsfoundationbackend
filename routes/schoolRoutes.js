@@ -1,5 +1,5 @@
 import express from 'express';
-import {addSchool, getAllSchool, getTotals, getAllDistricts, getSchoolByDistrictSyllabusMedium, getAllSchoolsCSV} from '../controllers/schoolController.js'
+import {addSchool, getAllSchool, getTotals, getAllDistricts, getSchoolByDistrictSyllabusMedium, getAllSchoolsCSV, getSchoolById, editSchool} from '../controllers/schoolController.js'
 
 const schoolRouter = express.Router();
 
@@ -9,5 +9,7 @@ schoolRouter.route("/getTotals").get(getTotals);
 schoolRouter.route("/getDistricts").get(getAllDistricts);
 schoolRouter.route("/getSchool").post(getSchoolByDistrictSyllabusMedium);
 schoolRouter.route("/getSchoolsCSV").get(getAllSchoolsCSV);
+schoolRouter.route("/id/:id").get(getSchoolById);
+schoolRouter.route("/editSchool").post(editSchool);
 
 export default schoolRouter;
