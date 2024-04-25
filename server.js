@@ -4,7 +4,8 @@ import cors from "cors";
 import mongooseConnection from "./mongo.js";
 import appRoutes from './routes/index.js'
 import fs from 'fs';
-import dotenv from 'dotenv'
+import dotenv from 'dotenv';
+import https from 'https';
 dotenv.config();
 
 const port = process.env.PORT || 4000;
@@ -50,7 +51,22 @@ app.use(
   });
 
 
-  app.listen(port, (req, res) => {
-    console.log(`Server is listening on port ${port}`);
-  });
+  // app.listen(port, (req, res) => {
+  //   console.log(`Server is listening on port ${port}`);
+  // });
 
+  if(process.env.DEPLOY_ENV === "local"){
+    app.listen(4000, (req, res) => {
+      console.log(`Server is listening on port ${port}`);
+    });
+    
+  }else if(process.env.DEPLOY_ENV === "prod"){
+    const httpsServer = https.createServer({
+      cert: fs.readFileSync(process.env.SSL_CRT_PATH),
+      key: fs.readFileSync(process.env.SSL_KEY_PATH),
+    }, app);
+    
+    httpsServer.listen(4000, () => {
+      console.log('HTTPS Server running on port 443');
+    });
+  }
