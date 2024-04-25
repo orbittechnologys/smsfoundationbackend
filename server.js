@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 mongooseConnection();
 
-const corsOrigin = ["http://localhost:5173","http://20.192.28.44"]
+const corsOrigin = ["http://localhost:5173","http://20.192.28.44","https://smsfoundation.neodeals.in"]
 
 app.use(
     cors({
