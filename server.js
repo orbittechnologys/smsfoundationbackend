@@ -51,9 +51,6 @@ app.use(
   });
 
 
-  // app.listen(port, (req, res) => {
-  //   console.log(`Server is listening on port ${port}`);
-  // });
 
   if(process.env.DEPLOY_ENV === "local"){
     app.listen(4000, (req, res) => {
