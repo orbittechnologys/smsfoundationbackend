@@ -69,3 +69,28 @@ export const getUser = asyncHandler(async (req,res)=> {
     return res.status(500).json({success:false,error})
   }
 })
+
+export const resetPassword = asyncHandler(async (req,res) => {
+  try {
+    const {userId,newPassword} = req.body;
+
+    let userDoc = await User.findById(userId);
+
+    if(!userDoc){
+      return res.status(400).json({success:false,msg:"No user with id:"+userId});
+    }
+
+    userDoc.password = newPassword;
+    await userDoc.save();
+
+    return res.status(200).json({
+      success:true,
+      userDoc
+    })
+
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({success:false,error});
+  }
+})
