@@ -15,9 +15,10 @@ jobs:
       # https://stackoverflow.com/a/70447517
       run: |
         install -m 600 -D /dev/null ~/.ssh/id_rsa
-        echo "${{ secrets.SMS_KEY }}" > ~/.ssh/id_rsa
-        ssh-keyscan -H ${{ secrets.HOST }} > ~/.ssh/known_hosts
+       
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
     - name: connect and pull
-      run: sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SSH_USER }}@${{ secrets.HOST }}  "sudo chown -R smsadmin:smsadmin /home/smsfoundationbackend && cd ${{ secrets.WORK_DIR }} && sudo git checkout ${{ secrets.MAIN_BRANCH }} && sudo git pull && sudo npm install && sudo systemctl restart backend && exit"
+      run: sshpass -p "${{ secrets.SSH_PASSWORD }}" ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}  "sudo chown -R smsadmin:smsadmin /home/smsfoundationbackend && cd ${{ secrets.WORK_DIR }} && sudo git checkout ${{ secrets.MAIN_BRANCH }} && sudo git pull && sudo npm install && sudo systemctl restart backend && exit"
     - name: cleanup
       run: rm -rf ~/.ssh
