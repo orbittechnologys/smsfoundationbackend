@@ -22,7 +22,7 @@ const corsOrigin = ["http://localhost:5173","http://20.192.28.44","https://smsfo
 
 app.use(
     cors({
-      origin: corsOrigin,
+      origin: '*',
       methods: ["GET", "POST", "PUT", "DELETE"],
       credentials: true,
     })
