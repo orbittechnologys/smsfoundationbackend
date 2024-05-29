@@ -94,3 +94,26 @@ export const resetPassword = asyncHandler(async (req,res) => {
     return res.status(500).json({success:false,error});
   }
 })
+
+export const createLocalAdmin = asyncHandler(async (req,res) => {
+  try {
+    const userDoc = await User.create({
+      email:"admin@smsfoundation.com",
+      username:"Local Admin",
+      phone:"8904489085",
+      password:"abc1234",
+      role:"ADMIN"
+    })
+
+    return res.status(200).json({
+      success:true,
+      userDoc
+    })
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success:false,
+      error
+    })
+  }
+})
