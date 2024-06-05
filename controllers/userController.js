@@ -122,3 +122,24 @@ export const createLocalAdmin = asyncHandler(async (req,res) => {
     })
   }
 })
+
+export const checkUsernamePresent = asyncHandler(async (req,res) => {
+  try {
+    const username = req.params.username;
+    const user = await User.findOne({loginUser:username});
+    if(user){
+      console.log('Username already taken',username);
+      return res.status(400).json({success:false,msg:"Username already taken "+username});
+    }else{
+      console.log('username available');
+      return res.status(200).json({success:true,msg:"Username available"+username})
+    }
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success:false,
+      error
+    })
+  }
+})
