@@ -39,16 +39,16 @@ export const getAllSyllabus = asyncHandler(async (req, res) => {
 
 export const editSyllabus = asyncHandler(async (req, res) => {
   try {
-    const { name, reference } = req.body;
+    const { name, reference, id } = req.body;
 
-    const syllabusDoc = await Syllabus.findOne({ name });
+    const syllabusDoc = await Syllabus.findById(id);
     if (!syllabusDoc) {
       return res.status(400).json({
         success: false,
         msg: "Invalid Syllabus " + name,
       });
     }
-    syllabusDoc.name = name;
+    syllabusDoc.name = name.toUpperCase();
     syllabusDoc.reference = reference;
 
     await syllabusDoc.save();
@@ -82,7 +82,7 @@ export const deleteSyllabus = asyncHandler(async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      msg: "Deleted successfully " + syllabus,
+      msg: "Deleted successfully " + syllabusId,
     });
   } catch (error) {
     console.log(error);

@@ -39,16 +39,16 @@ export const getAllMedium = asyncHandler(async (req, res) => {
 
 export const editMedium = asyncHandler(async (req, res) => {
   try {
-    const { name, reference } = req.body;
+    const { name, reference, id } = req.body;
 
-    const mediumDoc = await Medium.findOne({ name });
+    const mediumDoc = await Medium.findById(id);
     if (!mediumDoc) {
       return res.status(400).json({
         success: false,
         msg: "Invalid Syllabus " + name,
       });
     }
-    mediumDoc.name = name;
+    mediumDoc.name = name.toUpperCase();
     mediumDoc.reference = reference;
 
     await mediumDoc.save();

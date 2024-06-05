@@ -30,9 +30,14 @@ export const login = asyncHandler(async (req,res) => {
     const { email, password } = req.body;
   
     // checks for email
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ 
+      $or: [ 
+        { email: email }, 
+        { loginUser: email } 
+      ] 
+    });
     if(!user){
-      res.status(400).json({ message: 'Email not registered' });
+      res.status(400).json({ message: 'Email or Username not registered' });
     }
     //checks for password
     if (user && (await user.matchPassword(password))) {
