@@ -1,5 +1,6 @@
 import asyncHandler from "express-async-handler";
 import User from "../schemas/userSchema.js";
+import { generateOtp, sendEmail } from "../helpers/utils.js";
 
 export const register = asyncHandler(async (req, res) => {
   try {
@@ -143,3 +144,37 @@ export const checkUsernamePresent = asyncHandler(async (req,res) => {
     })
   }
 })
+
+export const triggerOtp = asyncHandler(async (req,res) => {
+  try {
+    const {email} = req.body;
+    const userDoc = await User.findOne({email});
+    if(!userDoc){
+      console.log("Could not find user with email:"+email);
+      return res.status(400).json({
+        email,
+        msg:"Could not find user with email:"+email,
+        success:false
+      })
+    }
+
+    const otp = generateOtp();
+    await sendEmail(email,"OTP to Reset Password", `
+      \n Hello ${userDoc?.username}, Your OTP to reset Password is ${otp}.
+      \n Regards SMSF Foundation
+    `)
+
+    return res.status(200).json({
+      userDoc,
+      otp,
+      success:false
+    })
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({success:false,error})
+  }
+})
+
+
+
