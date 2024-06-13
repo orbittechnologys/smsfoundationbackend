@@ -7,7 +7,7 @@ import { parse } from "json2csv";
 
 export const addInstructor = asyncHandler(async (req,res)=> {
     try {
-        const {firstName,middleName, lastName,phone,gender,email,qualification, password,school,medium} = req.body;
+        const {firstName,middleName, lastName,username,phone,gender,email,qualification, password,school,medium} = req.body;
 
         const userDoc = await User.findOne({email});
         if(userDoc){
@@ -19,6 +19,7 @@ export const addInstructor = asyncHandler(async (req,res)=> {
             username:`${firstName} ${lastName}`,
             phone,
             password,
+            loginUser:username,
             role:'INSTRUCTOR'
           });
 
