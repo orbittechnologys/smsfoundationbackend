@@ -8,9 +8,9 @@ import csv from 'csv-parser'
 
 export const addStudent = asyncHandler(async (req,res)=> {
     try {
-        const {email,phone,firstName,middleName, lastName,rollNo,standard,gender,school,password, syllabus,medium} = req.body
+        const {email,phone,firstName,middleName, lastName, username, rollNo,standard,gender,school,password, syllabus,medium} = req.body
 
-        const userDoc = await User.findOne({email});
+        const userDoc = await User.findOne({email,username});
         if(userDoc){
             console.log("User already exists");
             return res.status(400).json({success:false,msg:"User already exists with the email"})
@@ -26,6 +26,7 @@ export const addStudent = asyncHandler(async (req,res)=> {
             email,
             username:`${firstName} ${lastName}`,
             password,
+            loginUser:username,
             phone,
             role:'STUDENT'
           });

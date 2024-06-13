@@ -1,5 +1,6 @@
 import asyncHandler from "express-async-handler";
 import User from "../schemas/userSchema.js";
+import { generateOtp, sendEmail } from "../helpers/utils.js";
 
 export const register = asyncHandler(async (req, res) => {
   try {
@@ -30,9 +31,14 @@ export const login = asyncHandler(async (req,res) => {
     const { email, password } = req.body;
   
     // checks for email
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ 
+      $or: [ 
+        { email: email }, 
+        { loginUser: email } 
+      ] 
+    });
     if(!user){
-      res.status(400).json({ message: 'Email not registered' });
+      res.status(400).json({ message: 'Email or Username not registered' });
     }
     //checks for password
     if (user && (await user.matchPassword(password))) {
@@ -117,3 +123,58 @@ export const createLocalAdmin = asyncHandler(async (req,res) => {
     })
   }
 })
+
+export const checkUsernamePresent = asyncHandler(async (req,res) => {
+  try {
+    const username = req.params.username;
+    const user = await User.findOne({loginUser:username});
+    if(user){
+      console.log('Username already taken',username);
+      return res.status(400).json({success:false,msg:"Username already taken "+username});
+    }else{
+      console.log('username available');
+      return res.status(200).json({success:true,msg:"Username available"+username})
+    }
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success:false,
+      error
+    })
+  }
+})
+
+export const triggerOtp = asyncHandler(async (req,res) => {
+  try {
+    const {email} = req.body;
+    const userDoc = await User.findOne({email});
+    if(!userDoc){
+      console.log("Could not find user with email:"+email);
+      return res.status(400).json({
+        email,
+        msg:"Could not find user with email:"+email,
+        success:false
+      })
+    }
+
+    const otp = generateOtp();
+    await sendEmail(email,"OTP to Reset Password", `
+      \n Hello ${userDoc?.username}, Your OTP to reset Password is ${otp}.
+      \n Regards SMSF Foundation
+    `)
+
+    return res.status(200).json({
+      userDoc,
+      otp,
+      success:false
+    })
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({success:false,error})
+  }
+})
+
+
+
