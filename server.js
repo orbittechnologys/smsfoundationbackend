@@ -50,6 +50,59 @@ app.use(
     });
   });
 
+  const envFilePath = 'C:\\DigiLibrary\\smsfoundation\\.env';
+
+  // Function to update the .env file
+  const updateEnvFile = (baseUrl, syncUrl) => {
+    let envContent = fs.readFileSync(envFilePath, 'utf-8');
+    console.log('Updating base url',baseUrl);
+    console.log('Updating Sync url',syncUrl);
+    
+    // Update BASE_URL
+    envContent = envContent.replace(
+      /VITE_APP_BASE_URL\s*=\s*.*/g,
+      `VITE_APP_BASE_URL=${baseUrl}`
+    );
+    
+    // Update SYNC_URL
+    envContent = envContent.replace(
+      /VITE_APP_SYNC_URL\s*=\s*.*/g,
+      `VITE_APP_SYNC_URL=${syncUrl}`
+    );
+  
+    fs.writeFileSync(envFilePath, envContent);
+  };
+  
+  app.post('/switchOnline', (req, res) => {
+    try {
+      const newBaseUrl = 'http://localhost:4000/api/';
+      const newSyncUrl = 'http://localhost:4001/';
+      updateEnvFile(newBaseUrl, newSyncUrl);
+      res.send({ message: 'Switched to localhost' });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json(error);
+    }
+
+  });
+  
+  app.post('/switchOffline', (req, res) => {
+    try {
+      const ip = req.body.ip;
+      if (!ip) {
+        return res.status(400).send({ error: 'IP address is required' });
+      }
+      const newBaseUrl = `http://${ip}:4000/api/`;
+      const newSyncUrl = `http://${ip}:4001/`;
+      updateEnvFile(newBaseUrl, newSyncUrl);
+      res.send({ message: `Switched to ${ip}` });
+    } catch (error) {
+      console.log(error);
+      return res.status(500).json(error);
+    }
+
+  });
+
 
 
   if(process.env.DEPLOY_ENV === "local"){
