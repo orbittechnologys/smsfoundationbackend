@@ -118,7 +118,7 @@ app.get("/getIpConfig", (req, res) => {
       }
       console.log('cmd output',stdout);
       const ethRegex =
-        /Ethernet adapter [^:]+:\s*[\s\S]*?IPv4 Address[.\s]*?: ([\d.]+)/;
+        /Ethernet adapter Ethernet [^:]+:\s*[\s\S]*?IPv4 Address[.\s]*?: ([\d.]+)/;
       const wlanRegex =
         /Wireless LAN adapter [^:]+:\s*[\s\S]*?IPv4 Address[.\s]*?: ([\d.]+)/;
 
