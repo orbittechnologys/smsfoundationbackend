@@ -9,22 +9,16 @@ import https from "https";
 import { exec } from "child_process";
 import { stderr } from "process";
 dotenv.config();
-
 const port = process.env.PORT || 4000;
-
 const app = express();
-
 app.use(bodyParser.json({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
-
 mongooseConnection();
-
 const corsOrigin = [
   "http://localhost:5173",
   "http://20.192.28.44",
   "https://smsfoundation.neodeals.in",
 ];
-
 app.use(
   cors({
     origin: "*",
@@ -32,51 +26,40 @@ app.use(
     credentials: true,
   })
 );
-
 app.use("/api", appRoutes);
-
 app.get("/download/sample", (req, res) => {
   const filePath = "/home/example.txt"; // Path to the file on the server
-
   // Read the file from the server's filesystem
   fs.readFile(filePath, (err, data) => {
     if (err) {
       console.error("Error reading file:", err);
       return res.status(500).send("Internal Server Error");
     }
-
     // Set response headers to indicate file type and attachment
     res.setHeader("Content-Type", "text/plain");
     res.setHeader("Content-Disposition", "attachment; filename=example.txt");
-
     // Send the file as a response
     res.send(data);
   });
 });
-
 const envFilePath = "C:\\DigiLibrary\\smsfoundation\\.env";
-
 // Function to update the .env file
 const updateEnvFile = (baseUrl, syncUrl) => {
   let envContent = fs.readFileSync(envFilePath, "utf-8");
   console.log("Updating base url", baseUrl);
   console.log("Updating Sync url", syncUrl);
-
   // Update BASE_URL
   envContent = envContent.replace(
     /VITE_APP_BASE_URL\s*=\s*.*/g,
     `VITE_APP_BASE_URL=${baseUrl}`
   );
-
   // Update SYNC_URL
   envContent = envContent.replace(
     /VITE_APP_SYNC_URL\s*=\s*.*/g,
     `VITE_APP_SYNC_URL=${syncUrl}`
   );
-
   fs.writeFileSync(envFilePath, envContent);
 };
-
 app.post("/switchOnline", (req, res) => {
   try {
     const newBaseUrl = "http://localhost:4000/api/";
@@ -88,7 +71,6 @@ app.post("/switchOnline", (req, res) => {
     return res.status(500).json(error);
   }
 });
-
 app.post("/switchOffline", (req, res) => {
   try {
     const ip = req.body.ip;
@@ -104,7 +86,6 @@ app.post("/switchOffline", (req, res) => {
     return res.status(500).json(error);
   }
 });
-
 app.get("/getIpConfig", (req, res) => {
   try {
     exec("ipconfig", (error, stdout, stderr) => {
@@ -117,25 +98,16 @@ app.get("/getIpConfig", (req, res) => {
         });
       }
       console.log('Full cmd output:', stdout);
-
-      // Extract sections specifically for Ethernet and Wi-Fi
-      const ethAdapterRegex = /Ethernet adapter Ethernet[\s\S]*?IPv4 Address[.\s]*?:\s*([\d.]+)/;
-      const wlanAdapterRegex = /Wireless LAN adapter Wi-Fi[\s\S]*?IPv4 Address[.\s]*?:\s*([\d.]+)/;
-
-      // Match specific Ethernet section
-      const ethSectionMatch = stdout.match(/Ethernet adapter Ethernet([\s\S]*?)Wireless LAN adapter Wi-Fi/);
-      console.log("Ethernet Adapter Section:\n", ethSectionMatch ? ethSectionMatch[1] : "Not found");
-
-      // Match and extract IP addresses
-      const ethIpMatch = ethSectionMatch ? ethSectionMatch[1].match(ethAdapterRegex) : null;
+      // Updated regex pattern for the specific Ethernet adapter
+      const ethAdapterRegex = /Ethernet adapter Ethernet:\s[\s\S]*?IPv4 Address[.\s]*?:\s*([\d.]+)/;
+      const wlanAdapterRegex = /Wireless LAN adapter Wi-Fi:\s[\s\S]*?IPv4 Address[.\s]*?:\s*([\d.]+)/;
+      // Match specific Ethernet and Wi-Fi sections
+      const ethIpMatch = stdout.match(ethAdapterRegex);
       const wlanIpMatch = stdout.match(wlanAdapterRegex);
-
       const ethIp = ethIpMatch ? ethIpMatch[1] : "Not found";
       const wlanIp = wlanIpMatch ? wlanIpMatch[1] : "Not found";
-
       console.log("Extracted Ethernet IP:", ethIp);
       console.log("Extracted Wireless LAN IP:", wlanIp);
-
       res.send({
         ethIp,
         wlanIp,
@@ -150,13 +122,6 @@ app.get("/getIpConfig", (req, res) => {
     });
   }
 });
-
-
-
-
-
-
-
 if (process.env.DEPLOY_ENV === "local") {
   app.listen(4000, (req, res) => {
     console.log(`Server is listening on port ${port}`);
@@ -169,20 +134,10 @@ if (process.env.DEPLOY_ENV === "local") {
     },
     app
   );
-
   httpsServer.listen(4000, () => {
     console.log("HTTPS Server running on port 443");
   });
 }
-
-
-
-
-
-
-
-
-
 // import express from "express";
 // import bodyParser from "body-parser";
 // import cors from "cors";
@@ -194,22 +149,16 @@ if (process.env.DEPLOY_ENV === "local") {
 // import { exec } from "child_process";
 // import { stderr } from "process";
 // dotenv.config();
-
 // const port = process.env.PORT || 4000;
-
 // const app = express();
-
 // app.use(bodyParser.json({ extended: true }));
 // app.use(bodyParser.urlencoded({ extended: true }));
-
 // mongooseConnection();
-
 // const corsOrigin = [
 //   "http://localhost:5173",
 //   "http://20.192.28.44",
 //   "https://smsfoundation.neodeals.in",
 // ];
-
 // app.use(
 //   cors({
 //     origin: "*",
@@ -217,51 +166,40 @@ if (process.env.DEPLOY_ENV === "local") {
 //     credentials: true,
 //   })
 // );
-
 // app.use("/api", appRoutes);
-
 // app.get("/download/sample", (req, res) => {
 //   const filePath = "/home/example.txt"; // Path to the file on the server
-
 //   // Read the file from the server's filesystem
 //   fs.readFile(filePath, (err, data) => {
 //     if (err) {
 //       console.error("Error reading file:", err);
 //       return res.status(500).send("Internal Server Error");
 //     }
-
 //     // Set response headers to indicate file type and attachment
 //     res.setHeader("Content-Type", "text/plain");
 //     res.setHeader("Content-Disposition", "attachment; filename=example.txt");
-
 //     // Send the file as a response
 //     res.send(data);
 //   });
 // });
-
 // const envFilePath = "C:\\DigiLibrary\\smsfoundation\\.env";
-
 // // Function to update the .env file
 // const updateEnvFile = (baseUrl, syncUrl) => {
 //   let envContent = fs.readFileSync(envFilePath, "utf-8");
 //   console.log("Updating base url", baseUrl);
 //   console.log("Updating Sync url", syncUrl);
-
 //   // Update BASE_URL
 //   envContent = envContent.replace(
 //     /VITE_APP_BASE_URL\s*=\s*.*/g,
 //     `VITE_APP_BASE_URL=${baseUrl}`
 //   );
-
 //   // Update SYNC_URL
 //   envContent = envContent.replace(
 //     /VITE_APP_SYNC_URL\s*=\s*.*/g,
 //     `VITE_APP_SYNC_URL=${syncUrl}`
 //   );
-
 //   fs.writeFileSync(envFilePath, envContent);
 // };
-
 // app.post("/switchOnline", (req, res) => {
 //   try {
 //     const newBaseUrl = "http://localhost:4000/api/";
@@ -273,7 +211,6 @@ if (process.env.DEPLOY_ENV === "local") {
 //     return res.status(500).json(error);
 //   }
 // });
-
 // app.post("/switchOffline", (req, res) => {
 //   try {
 //     const ip = req.body.ip;
@@ -289,7 +226,6 @@ if (process.env.DEPLOY_ENV === "local") {
 //     return res.status(500).json(error);
 //   }
 // });
-
 // app.get("/getIpConfig", (req, res) => {
 //   try {
 //     exec("ipconfig", (error, stdout, stderr) => {
@@ -306,10 +242,8 @@ if (process.env.DEPLOY_ENV === "local") {
 //         /Ethernet adapter Ethernet [^:]+:\s*[\s\S]*?IPv4 Address[.\s]*?: ([\d.]+)/;
 //       const wlanRegex =
 //         /Wireless LAN adapter [^:]+:\s*[\s\S]*?IPv4 Address[.\s]*?: ([\d.]+)/;
-
 //       const ethMatch = stdout.match(ethRegex);
 //       const wlanMatch = stdout.match(wlanRegex);
-
 //       const ethIp = ethMatch ? ethMatch[1] : "Not found";
 //       const wlanIp = wlanMatch ? wlanMatch[1] : "Not found";
 //       console.log("Ethernet ip",ethIp);
@@ -328,7 +262,6 @@ if (process.env.DEPLOY_ENV === "local") {
 //     });
 //   }
 // });
-
 // if (process.env.DEPLOY_ENV === "local") {
 //   app.listen(4000, (req, res) => {
 //     console.log(`Server is listening on port ${port}`);
@@ -341,7 +274,6 @@ if (process.env.DEPLOY_ENV === "local") {
 //     },
 //     app
 //   );
-
 //   httpsServer.listen(4000, () => {
 //     console.log("HTTPS Server running on port 443");
 //   });
