@@ -1,5 +1,5 @@
 import express from 'express';
-import { addInstructor, editInstructor, fetchAllInstructorsCSV, fetchInstructorById, fetchStudentsByInstructorId, getAllInstructor, getInstructorByUserId, resetPassword } from '../controllers/instructorController.js';
+import { addInstructor, deleteInstructor, editInstructor, fetchAllInstructorsCSV, fetchInstructorById, fetchStudentsByInstructorId, getAllInstructor, getInstructorByUserId, resetPassword } from '../controllers/instructorController.js';
 
 const instructorRouter = express.Router();
 
@@ -11,5 +11,6 @@ instructorRouter.route("/fetchStudents/:instructorId").get(fetchStudentsByInstru
 instructorRouter.route("/getInstructorsCSV").get(fetchAllInstructorsCSV);
 instructorRouter.route("/id/:id").get(fetchInstructorById);
 instructorRouter.route("/editInstructor").post(editInstructor);
+instructorRouter.route("/deleteInstructor/:id").delete(deleteInstructor);
 
 export default instructorRouter;

@@ -299,3 +299,20 @@ export const fetchCountGenders = async (req, res) => {
             }
         });
 });
+
+export const deleteStudent = asyncHandler(async(req,res)=>{
+    try {
+        const id = req.params.id;
+        const studentDoc = await Student.findById(id);
+        if(!studentDoc){
+            return res.status(400).json({success:false, msg:`Student not found with id ${id}` });
+        }   
+        const userId = studentDoc.user;
+        await User.findByIdAndDelete(userId);
+        await Student.findByIdAndDelete(id);
+        return res.status(200).json({success:true, msg:`Student with id ${id} deleted successfully` });     
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({msg: "Internal server error", success: false });
+    }
+})
