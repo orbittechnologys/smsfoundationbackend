@@ -2,6 +2,7 @@ import asyncHandler from "express-async-handler";
 import School from "../schemas/schoolSchema.js";
 import Student from "../schemas/studentSchema.js";
 import Instructor from "../schemas/instructorSchema.js";
+import User from "../schemas/userSchema.js";
 import { parse } from "json2csv";
 
 export const addSchool = asyncHandler(async (req, res) => {
