@@ -24,6 +24,6 @@ studentRouter.route("/getAll").get(getAllStudents);
 studentRouter.route("/genderRatio/:district").get(fetchCountGenders);
 studentRouter.route("/getStudentsCSV").get(fetchAllStudentsCSV);
 studentRouter.route('/uploadStudentsCSV/:schoolId').post(uploadCsv.single('file'), uploadStudentsCSV);
-studentRouter.route("/deleteStudent/:studentId").delete(deleteStudent);
+studentRouter.route("/deleteStudent/:id").delete(deleteStudent);
 
 export default studentRouter;
