@@ -238,3 +238,23 @@ export const editInstructor = asyncHandler(async (req,res) => {
         return res.status(500).json({success:false,error});
     }
 })
+
+export const deleteInstructor = asyncHandler(async (req, res) => {
+    try {
+        const id = req.params.id;
+        const instructorDoc = await Instructor.findById(id);
+        if (!instructorDoc ) {
+            return res.status(400).json({ success: false, msg: "No instructor found with ID " + id });
+        }
+        const userId = instructorDoc.user;
+
+        await User.findByIdAndDelete(userId);
+
+        await Instructor.findByIdAndDelete(id);
+
+        return res.status(200).json({ success: true, msg: `Deleted instructor with ID ${id} and user with ID ${userId}` });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ msg: "Internal server error", success: false });
+    }
+});

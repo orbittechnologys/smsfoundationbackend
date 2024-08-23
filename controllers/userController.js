@@ -176,5 +176,20 @@ export const triggerOtp = asyncHandler(async (req,res) => {
   }
 })
 
+export const deleteUser = asyncHandler(async(req,res)=>{
+  try {
+    const id = req.params.id;
+    const userDoc = await User.findByIdAndDelete(id);
+    if(!userDoc || userDoc.length === 0){
+      return res.status(400).json({msg:`User could not delete or find with id ${id}`,success:false});
+    }
+
+    return res.status(200).json({msg:`Successfully deleted user with id ${id}`,success:true});
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({msg:"Internal server error", success:false});
+  }
+});
+
 
 
