@@ -1,6 +1,9 @@
 import asyncHandler from "express-async-handler";
 import Chapter from "../schemas/chapterSchema.js";
 import Subject from "../schemas/subjectSchema.js";
+import ChapterTime from "../schemas/chapterTimeSchema.js";
+import Test from "../schemas/testSchema.js";
+import Questions from "../schemas/questionsSchema.js";
 
 export const addChapter = asyncHandler(async (req, res) => {
   try {
@@ -106,3 +109,70 @@ export const getChapterQuery = asyncHandler(async (req, res) => {
     return res.status(500).json({ success: false, error });
   }
 });
+
+export const updateChapter = asyncHandler(async (req,res) => {
+  try {
+    const {chapterId, name,desc,chapterUrl,audioUrl,videoUrl} = req.body;
+
+    let chapterDoc = await Chapter.findById(chapterId);
+    if(!chapterDoc){
+      return res.status(400).json({
+        success:false,
+        msg:"Invalid chapter id :"+chapterId
+      })
+    }
+
+    chapterDoc.name = name;
+    chapterDoc.desc = desc;
+    chapterDoc.chapterUrl = chapterUrl;
+    chapterDoc.audioUrl = audioUrl;
+    chapterDoc.videoUrl = videoUrl;
+
+    chapterDoc = await chapterDoc.save();
+
+    return res.status(200).json({
+      msg:"Chapter updated successfully",
+      success:true,
+      chapterDoc
+    })
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ success: false, error });
+  }
+})
+
+export const deleteChapter = asyncHandler(async (req,res) => {
+  try {
+    const chapterId = req.params.id;
+
+    let chapterDoc = await Chapter.findById(chapterId);
+    if(!chapterDoc){
+      return res.status(400).json({
+        success:false,
+        msg:"Invalid chapter id :"+chapterId
+      })
+    }
+      await ChapterTime.deleteMany({ chapter: chapterId });
+
+      let tests = await Test.find({ chapter: chapterId });
+
+      for (let test of tests) {
+        await Questions.deleteMany({ test: test._id }); //only will be called once
+      }
+
+      await Test.deleteMany({ chapter: chapterId });
+
+      await Chapter.findByIdAndDelete(chapterId);
+
+      return res.status(200).json({
+        success: true,
+        msg: "Chapter and related data deleted successfully",
+      });
+
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ success: false, error });
+  }
+})
