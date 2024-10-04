@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const chapterSchema = mongoose.Schema({
-  chapterUrl: { type: String, unique: true },
+  chapterUrl: { type: String },
   audioUrl: { type: String },
   videoUrl: [{ type: String }],
   name: { type: String },
