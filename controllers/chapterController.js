@@ -4,6 +4,7 @@ import Subject from "../schemas/subjectSchema.js";
 import ChapterTime from "../schemas/chapterTimeSchema.js";
 import Test from "../schemas/testSchema.js";
 import Questions from "../schemas/questionsSchema.js";
+import Student from "../schemas/studentSchema.js";
 
 export const addChapter = asyncHandler(async (req, res) => {
   try {
@@ -176,3 +177,52 @@ export const deleteChapter = asyncHandler(async (req,res) => {
     return res.status(500).json({ success: false, error });
   }
 })
+
+export const getChapterTestsByStudentId = asyncHandler(async (req, res) => {
+  try {
+    const studentId = req.params.studentId;
+    
+    const student = await Student.findById(studentId);
+
+    if (!student) {
+      return res.status(404).json({ success: false, msg: "Student not found" });
+    }
+
+    const studentDetails = {
+      firstName: student.firstName,
+      lastName: student.lastName,
+      standard: student.standard,
+      syllabus: student.syllabus,
+      medium: student.medium
+    };
+
+    const subjects = await Subject.find({
+      standard: student.standard,
+      syllabus: student.syllabus,
+      medium: student.medium
+    });
+
+    if (!subjects || subjects.length === 0) {
+      return res.status(404).json({ success: false, msg: "No subjects found for the student's standard, syllabus, and medium" });
+    }
+
+    const chapterTests = await Chapter.find({
+      subject: { $in: subjects.map(subject => subject._id) },
+      test: { $ne: null } // Ensure test is not null
+    });
+
+    if (!chapterTests || chapterTests.length === 0) {
+      return res.status(404).json({ success: false, msg: "No chapters with tests found for this student" });
+    }
+
+    return res.status(200).json({
+      success: true,
+      student: studentDetails,
+      chaptersWithTests: chapterTests
+    });
+
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ success: false, error: error.message });
+  }
+});
