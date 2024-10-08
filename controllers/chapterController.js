@@ -209,7 +209,7 @@ export const getChapterTestsByStudentId = asyncHandler(async (req, res) => {
     const chapterTests = await Chapter.find({
       subject: { $in: subjects.map(subject => subject._id) },
       test: { $ne: null } // Ensure test is not null
-    }).populate('subject'); 
+    }).populate('subject').populate('test');
 
     if (!chapterTests || chapterTests.length === 0) {
       return res.status(404).json({ success: false, msg: "No chapters with tests found for this student" });
