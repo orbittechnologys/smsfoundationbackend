@@ -308,8 +308,11 @@ export const deleteStudent = asyncHandler(async(req,res)=>{
             return res.status(400).json({success:false, msg:`Student not found with id ${id}` });
         }   
         const userId = studentDoc.user;
+        console.log(userId,"to be deleted");
         await User.findByIdAndDelete(userId);
+        console.log("Successfully deleted user "+userId);
         await Student.findByIdAndDelete(id);
+        console.log("Successfully Deleted Student:"+id);
         return res.status(200).json({success:true, msg:`Student with id ${id} deleted successfully` });     
     } catch (error) {
         console.error(error);
