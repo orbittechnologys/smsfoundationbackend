@@ -7,7 +7,7 @@ import { parse } from "json2csv";
 
 export const getOverallSubjectReport = asyncHandler(async(req,res)=> {
     try {
-        const subjectReport = await SubjectTime.find({ student: { $ne: null })
+        const subjectReport = await SubjectTime.find({ student: { $ne: null }})
         .populate("subject")
         .populate({
             path:'student',
