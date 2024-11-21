@@ -7,24 +7,24 @@ import { parse } from "json2csv";
 
 export const getOverallSubjectReport = asyncHandler(async(req,res)=> {
     try {
-        const subjectReport = await SubjectTime.find({})
+        const subjectReport = await SubjectTime.find({ student: { $ne: null })
         .populate("subject")
         .populate({
             path:'student',
             populate:{path:'school'} 
         }).exec();
                 // Modify response structure
-                const modifiedSubjectReport = subjectReport.map((report) => ({
-                  _id: report._id,
-                  student: {
-                    ...report.student.toObject(),
-                    school: report.student.school._id, // Extract only school ID
-                  },
-                  subject: report.subject,
-                  time: report.time,
-                  __v: report.__v,
-                  school: report.student.school, // Add school details outside of student
-                }));
+               const modifiedSubjectReport = subjectReport.map((report) => ({
+                      _id: report._id,
+                      student: report.student ? {
+                        ...report.student.toObject(),
+                        school: report.student.school._id, // Extract only school ID
+                      } : null, // Set student to null if it's missing
+                      subject: report.subject,
+                      time: report.time,
+                      __v: report.__v,
+                      school: report.student?.school, // Use optional chaining for school
+                    }));
         
         
         return res.status(200).json({success:true, subjectReport: modifiedSubjectReport});
