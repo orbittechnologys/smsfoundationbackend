@@ -55,16 +55,37 @@ export const addStudent = asyncHandler(async (req,res)=> {
 })
 
 
-export const getStudentByUserId = asyncHandler(async (req,res)=> {
+// export const getStudentByUserId = asyncHandler(async (req,res)=> {
+//     try {
+//         const userId = req.params.userId;
+//         const studentDoc = await Student.findOne({user: userId});
+//         return res.status(200).json({success:true,studentDoc});
+//     } catch (error) {
+//         console.log(error);
+//         return res.status(500).json({success:false,error})
+//     }
+// })
+
+export const getStudentByUserId = asyncHandler(async (req, res) => {
     try {
         const userId = req.params.userId;
-        const studentDoc = await Student.findOne({user: userId});
-        return res.status(200).json({success:true,studentDoc});
+
+        const studentDoc = await Student.findOne({ user: userId })
+            .populate({
+                path: 'user',
+                select: 'email phone' 
+            });
+
+        if (!studentDoc) {
+            return res.status(404).json({ success: false, message: "Student not found" });
+        }
+
+        return res.status(200).json({ success: true, studentDoc });
     } catch (error) {
-        console.log(error);
-        return res.status(500).json({success:false,error})
+        console.error(error);
+        return res.status(500).json({ success: false, error });
     }
-})
+});
 
 export const updateStudent = asyncHandler(async (req,res) => {
     try {
