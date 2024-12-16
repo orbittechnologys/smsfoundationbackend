@@ -59,8 +59,8 @@ if (process.env.DEPLOY_ENV === "local") {
 } else if (process.env.DEPLOY_ENV === "prod") {
   const httpsServer = https.createServer(
     {
-      // cert: fs.readFileSync(process.env.SSL_CRT_PATH),
-      // key: fs.readFileSync(process.env.SSL_KEY_PATH),
+      cert: fs.readFileSync(process.env.SSL_CRT_PATH),
+      key: fs.readFileSync(process.env.SSL_KEY_PATH),
     },
     app
   );
