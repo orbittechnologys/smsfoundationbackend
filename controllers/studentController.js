@@ -55,21 +55,42 @@ export const addStudent = asyncHandler(async (req,res)=> {
 })
 
 
-export const getStudentByUserId = asyncHandler(async (req,res)=> {
+// export const getStudentByUserId = asyncHandler(async (req,res)=> {
+//     try {
+//         const userId = req.params.userId;
+//         const studentDoc = await Student.findOne({user: userId});
+//         return res.status(200).json({success:true,studentDoc});
+//     } catch (error) {
+//         console.log(error);
+//         return res.status(500).json({success:false,error})
+//     }
+// })
+
+export const getStudentByUserId = asyncHandler(async (req, res) => {
     try {
         const userId = req.params.userId;
-        const studentDoc = await Student.findOne({user: userId});
-        return res.status(200).json({success:true,studentDoc});
+
+        const studentDoc = await Student.findOne({ user: userId })
+            .populate({
+                path: 'user',
+                select: 'email phone' 
+            });
+
+        if (!studentDoc) {
+            return res.status(404).json({ success: false, message: "Student not found" });
+        }
+
+        return res.status(200).json({ success: true, studentDoc });
     } catch (error) {
-        console.log(error);
-        return res.status(500).json({success:false,error})
+        console.error(error);
+        return res.status(500).json({ success: false, error });
     }
-})
+});
 
 export const updateStudent = asyncHandler(async (req,res) => {
     try {
 
-        const {studentId,firstName,lastName,rollNo,standard, email, phone } = req.body;
+        const {studentId,firstName,lastName,rollNo,standard, email, phone, profilePic } = req.body;
         const studentDoc = await Student.findById(studentId);
         if(!studentDoc){
             console.log("Invalid student id "+studentId);
@@ -79,7 +100,8 @@ export const updateStudent = asyncHandler(async (req,res) => {
             firstName,
             lastName,
             rollNo,
-            standard
+            standard,
+            profilePic
         })
 
         await User.updateOne({_id:studentDoc.user},{
@@ -237,7 +259,20 @@ export const fetchCountGenders = async (req, res) => {
  export const fetchAllStudentsCSV = async (req,res) => {
     try {
         const students = await Student.find({}).populate("school").exec();
-        const csv = parse(students, { fields: ["firstName", "middleName", "lastName", "rollNo", "standard", "syllabus",  "medium", "gender", "school.name", "school.state","school.district","school.pincode","school.address"] });
+        const csv = parse(students, { fields: [           
+            { label: "First Name", value: "firstName" },
+            { label: "Middle Name", value: "middleName" },
+            { label: "Last Name", value: "lastName" },
+            { label: "Roll No", value: "rollNo" },
+            { label: "Standard", value: "standard" },
+            { label: "Syllabus", value: "syllabus" },
+            { label: "Medium", value: "medium" },
+            { label: "Gender", value: "gender" },
+            { label: "School Name", value: "school.name" },
+            { label: "State", value: "school.state" },
+            { label: "District", value: "school.district" },
+            { label: "Pincode", value: "school.pincode" },
+            { label: "Address", value: "school.address" },] });
 
         res.header('Content-Type', 'text/csv');
         res.attachment('allStudents.csv');

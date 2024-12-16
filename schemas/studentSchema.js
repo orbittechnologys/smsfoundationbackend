@@ -13,10 +13,11 @@ const studentSchema = mongoose.Schema({
     standard:{type:Number},
     syllabus : {type:String},
     medium: {type:String},
-    gender:{type:String},
+    gender:{type:String, required:true},
     subjectCompletion:[subjectCompletionSchema],
     school:{type:mongoose.Schema.Types.ObjectId, ref:"school"},
-    user:{type:mongoose.Schema.Types.ObjectId, ref:"users"}
+    user:{type:mongoose.Schema.Types.ObjectId, ref:"users"},
+    profilePic:{type:String},
   });
 
 
