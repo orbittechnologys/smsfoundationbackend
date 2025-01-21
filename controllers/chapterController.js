@@ -8,7 +8,7 @@ import Student from "../schemas/studentSchema.js";
 
 export const addChapter = asyncHandler(async (req, res) => {
   try {
-    const { chapterUrl, audioUrl, videoUrl, subjectId, name, desc } = req.body;
+    const { chapterUrl, audioUrl, videoUrl, subjectId, name, desc, thumbnail } = req.body;
 
     console.log(audioUrl, videoUrl);
 
@@ -52,10 +52,11 @@ export const addChapter = asyncHandler(async (req, res) => {
     const chapter = await Chapter.create({
       chapterUrl,
       audioUrl,
-      videoUrl, // Now an array
+      videoUrl,
       name,
       subject: subjectId,
       desc,
+      thumbnail, 
     });
 
     return res.status(200).json({ success: true, chapter });
@@ -111,37 +112,37 @@ export const getChapterQuery = asyncHandler(async (req, res) => {
   }
 });
 
-export const updateChapter = asyncHandler(async (req,res) => {
+export const updateChapter = asyncHandler(async (req, res) => {
   try {
-    const {chapterId, name,desc,chapterUrl,audioUrl,videoUrl} = req.body;
+    const { chapterId, name, desc, chapterUrl, audioUrl, videoUrl, thumbnail } = req.body;
 
     let chapterDoc = await Chapter.findById(chapterId);
-    if(!chapterDoc){
+    if (!chapterDoc) {
       return res.status(400).json({
-        success:false,
-        msg:"Invalid chapter id :"+chapterId
-      })
+        success: false,
+        msg: "Invalid chapter id: " + chapterId,
+      });
     }
 
-    chapterDoc.name = name;
-    chapterDoc.desc = desc;
-    chapterDoc.chapterUrl = chapterUrl;
-    chapterDoc.audioUrl = audioUrl;
-    chapterDoc.videoUrl = videoUrl;
+    chapterDoc.name = name || chapterDoc.name;
+    chapterDoc.desc = desc || chapterDoc.desc;
+    chapterDoc.chapterUrl = chapterUrl || chapterDoc.chapterUrl;
+    chapterDoc.audioUrl = audioUrl || chapterDoc.audioUrl;
+    chapterDoc.videoUrl = Array.isArray(videoUrl) ? videoUrl : chapterDoc.videoUrl;
+    chapterDoc.thumbnail = thumbnail || chapterDoc.thumbnail;
 
     chapterDoc = await chapterDoc.save();
 
     return res.status(200).json({
-      msg:"Chapter updated successfully",
-      success:true,
-      chapterDoc
-    })
-
+      msg: "Chapter updated successfully",
+      success: true,
+      chapterDoc,
+    });
   } catch (error) {
     console.log(error);
     return res.status(500).json({ success: false, error });
   }
-})
+});
 
 export const deleteChapter = asyncHandler(async (req,res) => {
   try {
