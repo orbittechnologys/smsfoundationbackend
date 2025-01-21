@@ -83,36 +83,45 @@ export const getTestsForStudent = asyncHandler(async (req,res)=> {
     }
 })
 
-export const getTestReport = asyncHandler(async (req,res)=> {
+export const getTestReport = asyncHandler(async (req, res) => {
     try {
-        const testReport = await studentTest.find({})
-        .populate({
-            path:'student',
-            populate:{path:'school'} 
-        })
-        .populate("test").exec();
+        const testReport = await studentTest
+            .find({})
+            .populate({
+                path: 'student',
+                populate: { path: 'school' }
+            })
+            .populate("test")
+            .exec();
 
-        const modifiedTestReport = testReport.map((report) => ({
+        if (!testReport || testReport.length === 0) {
+            return res.status(404).json({ success: false, message: "No test reports found." });
+        }
+
+        // Filter out reports with null or missing references
+        const validTestReport = testReport.filter(
+            (report) => report.student && report.student.school && report.test
+        );
+
+        const modifiedTestReport = validTestReport.map((report) => ({
             _id: report._id,
             student: {
-              ...report.student.toObject(),
-              school: report.student.school._id, // Extract only school ID
+                ...report.student.toObject(),
+                school: report.student.school._id, // Extract only school ID
             },
             test: report.test,
             marks: report.marks,
             __v: report.__v,
             school: report.student.school, // Add school details outside of student
-            percentage: getPercentage(report.marks,report.test.totalMarks)
-          }));
+            percentage: getPercentage(report.marks, report.test.totalMarks),
+        }));
 
-
-
-        return res.status(200).json({success:true,testReport : modifiedTestReport});
+        return res.status(200).json({ success: true, testReport: modifiedTestReport });
     } catch (error) {
-        console.log(error);
-        return res.status(500).json({success:false,error})
+        console.error("Error fetching test report:", error); // Logs detailed error
+        return res.status(500).json({ success: false, error: error.message || "Internal Server Error" });
     }
-})
+});
 
 export const getTestResults = asyncHandler(async (req,res)=>{
     try {
