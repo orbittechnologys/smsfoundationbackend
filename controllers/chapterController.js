@@ -8,7 +8,7 @@ import Student from "../schemas/studentSchema.js";
 
 export const addChapter = asyncHandler(async (req, res) => {
   try {
-    const { chapterUrl, audioUrl, videoUrl, subjectId, name, desc, thumbnail } = req.body;
+    const { chapterUrl, audioUrl, videoUrl, subjectId, name, desc, subtitle, thumbnail } = req.body;
 
     console.log(audioUrl, videoUrl);
 
@@ -56,6 +56,7 @@ export const addChapter = asyncHandler(async (req, res) => {
       name,
       subject: subjectId,
       desc,
+      subtitle,
       thumbnail, 
     });
 
@@ -114,7 +115,7 @@ export const getChapterQuery = asyncHandler(async (req, res) => {
 
 export const updateChapter = asyncHandler(async (req, res) => {
   try {
-    const { chapterId, name, desc, chapterUrl, audioUrl, videoUrl, thumbnail } = req.body;
+    const { chapterId, name, desc, subtitle, chapterUrl, audioUrl, videoUrl, thumbnail } = req.body;
 
     let chapterDoc = await Chapter.findById(chapterId);
     if (!chapterDoc) {
@@ -126,6 +127,7 @@ export const updateChapter = asyncHandler(async (req, res) => {
 
     chapterDoc.name = name || chapterDoc.name;
     chapterDoc.desc = desc || chapterDoc.desc;
+    chapterDoc.subtitle = subtitle || chapterDoc.subtitle;
     chapterDoc.chapterUrl = chapterUrl || chapterDoc.chapterUrl;
     chapterDoc.audioUrl = audioUrl || chapterDoc.audioUrl;
     chapterDoc.videoUrl = Array.isArray(videoUrl) ? videoUrl : chapterDoc.videoUrl;

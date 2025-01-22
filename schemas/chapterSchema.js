@@ -6,6 +6,7 @@ const chapterSchema = mongoose.Schema({
   videoUrl: [{ type: String }],
   name: { type: String },
   desc: { type: String },
+  subtitle: {type: String},
   thumbnail: { type: String },
   subject: { type: mongoose.Schema.Types.ObjectId, ref: "subject" },
   totalHours: { type: Number, default: 0 },
