@@ -4,61 +4,62 @@ import Student from "../schemas/studentSchema.js";
 import ChapterTime from "../schemas/chapterTimeSchema.js";
 import studentTest from "../schemas/studentTestSchema.js";
 import School from '../schemas/schoolSchema.js';
+import Questions from "../schemas/questionsSchema.js";
 import mongoose from 'mongoose';
 import { parse } from "json2csv";
 import { getPercentage } from "../helpers/utils.js";
 
-export const submitTest = asyncHandler(async (req,res)=> {
+export const submitTest = asyncHandler(async (req, res) => {
     try {
-        const {
-            testId,
-            studentId,
-            marks
-        } = req.body;
+        const { testId, studentId, marks, selectedAnswers } = req.body;
 
         const test = await Test.findById(testId);
-        if(!test){
-            return res.status(400).json({success:false,msg:"No such test "+testId})
+        if (!test) {
+            return res.status(400).json({ success: false, msg: `No such test ${testId}` });
         }
 
         const student = await Student.findById(studentId);
-        if(!student){
-            return res.status(400).json({success:false,msg:"No such student "+studentId})
+        if (!student) {
+            return res.status(400).json({ success: false, msg: `No such student ${studentId}` });
         }
 
-        const chapterTime = await ChapterTime.findOne({student:studentId, chapter:test.chapter});
-        console.log(chapterTime);
-
-        if(chapterTime){
-            await ChapterTime.updateOne({_id:chapterTime._id},{
-                status:"COMPLETED"
-            })
+        const chapterTime = await ChapterTime.findOne({ student: studentId, chapter: test.chapter });
+        if (chapterTime) {
+            await ChapterTime.updateOne({ _id: chapterTime._id }, { status: "COMPLETED" });
         }
 
-        const studentTestDoc = await studentTest.findOne({
-            "student":studentId,
-            "test":testId
-        })
+        // Check if a studentTest document already exists
+        let studentTestDoc = await studentTest.findOne({
+            student: studentId,
+            test: testId,
+        });
 
-        if(studentTestDoc){
-            await studentTest.updateOne({_id:studentTestDoc._id},{
-                marks:marks
-            })
-            return res.status(200).json({success:true,"msg":"Updated student test"});
-        }else{
+        if (studentTestDoc) {
+            // Update existing document
+            studentTestDoc.marks = marks;
+            studentTestDoc.selectedAnswers = selectedAnswers; // Update selected answers
+            studentTestDoc.updatedAt = new Date();
+            await studentTestDoc.save();
+
+            // Return updated document
+            return res.status(200).json({ success: true, studentTestDoc });
+        } else {
+            // Create new document
             const studentTestEntry = await studentTest.create({
-                student:studentId,
-                test:testId,
+                student: studentId,
+                test: testId,
                 marks,
-              });
-              return res.status(200).json({success:true,studentTestEntry})
+                selectedAnswers, // Save selected answers
+            });
+
+            // Return created document
+            return res.status(200).json({ success: true, studentTestEntry });
         }
-    
     } catch (error) {
-        console.log(error);
-        return res.status(500).json({success:false,error});
+        console.error(error);
+        return res.status(500).json({ success: false, error: error.message });
     }
-})
+});
 
 export const getTestsForStudent = asyncHandler(async (req,res)=> {
     try {
