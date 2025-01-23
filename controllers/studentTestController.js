@@ -352,3 +352,41 @@ export const fetchLatestStudentTests = async (req, res) => {
       res.status(500).json({ message: 'Internal server error' });
     }
   };
+
+  export const getTestResult = asyncHandler(async (req, res) => {
+    try {
+      const { testId, studentId } = req.query;
+      console.log(`Fetching test with ID: ${testId}`);
+      const test = await Test.findById(testId);
+      if (!test) {
+        return res
+          .status(400)
+          .json({ success: false, msg: `No such test ${testId}` });
+      }
+      console.log(`Fetching student with ID: ${studentId}`);
+      const student = await Student.findById(studentId);
+      if (!student) {
+        return res
+          .status(400)
+          .json({ success: false, msg: `No such student ${studentId}` });
+      }
+      console.log(`Fetching student test document for student ID: ${studentId} and test ID: ${testId}`);
+      const studentTestDoc = await studentTest.findOne({
+        student: studentId,
+        test: testId,
+      });
+      if (!studentTestDoc) {
+        return res
+          .status(404)
+          .json({
+            success: false,
+            msg: "No test results found for this student and test",
+          });
+      }
+      return res.status(200).json({ success: true, studentTestDoc });
+    } catch (error) {
+      console.error(`Error fetching test result: ${error.message}`);
+      return res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
