@@ -95,7 +95,7 @@ export const getChaptersBySubject = asyncHandler(async (req, res) => {
   }
 });
 
-export const getChapterQuery = asyncHandler(async (req, res) => {
+/* export const getChapterQuery = asyncHandler(async (req, res) => {
   try {
     const query = req.params.query;
     const regexPattern = new RegExp(query, "i");
@@ -111,7 +111,32 @@ export const getChapterQuery = asyncHandler(async (req, res) => {
     console.log(error);
     return res.status(500).json({ success: false, error });
   }
+}); */
+
+export const getChapterQuery = asyncHandler(async (req, res) => {
+  try {
+    const query = req.params.query;
+    const studentClass = req.query.class; 
+    const regexPattern = new RegExp(query, "i");
+
+    const chapters = await Chapter.find({
+      name: { $regex: regexPattern },
+    })
+      .populate({
+        path: "subject",
+        match: { standard: studentClass }, 
+      })
+      .exec();
+
+    const filteredChapters = chapters.filter(chapter => chapter.subject);
+
+    return res.status(200).json({ success: true, chapters: filteredChapters });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ success: false, error });
+  }
 });
+
 
 export const updateChapter = asyncHandler(async (req, res) => {
   try {
