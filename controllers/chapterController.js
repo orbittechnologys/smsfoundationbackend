@@ -129,6 +129,9 @@ export const getChapterQuery = asyncHandler(async (req, res) => {
       .exec();
 
     const filteredChapters = chapters.filter(chapter => chapter.subject);
+    if(!chapters){
+      return res.status(404).json({ success: false, msg: "No chapters found" });
+    }
 
     return res.status(200).json({ success: true, chapters: filteredChapters });
   } catch (error) {
