@@ -66,7 +66,8 @@ export const updateChapterTime = asyncHandler(async (req,res)=> {
             const subjectTime = await SubjectTime.create({
                 student:studentId,
                 subject:subjectDoc._id,
-                time
+                time,
+                source
             })
 
             return res.status(200).json({success:true,msg:"Updated chapter and chapter time and created subject time"});
@@ -75,7 +76,8 @@ export const updateChapterTime = asyncHandler(async (req,res)=> {
             console.log("Updating subject time doc");
 
             await SubjectTime.updateOne({_id:subjectTimeDoc._id},{
-                time: Number(subjectTimeDoc.time) + Number(time)
+                time: Number(subjectTimeDoc.time) + Number(time),
+                source
             })
 
             return res.status(200).json({success:true,msg:"Updated chapter and chapter time and subject time"});
