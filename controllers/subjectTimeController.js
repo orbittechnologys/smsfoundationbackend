@@ -24,6 +24,9 @@ export const getOverallSubjectReport = asyncHandler(async(req,res)=> {
                       time: report.time,
                       __v: report.__v,
                       school: report.student?.school, // Use optional chaining for school
+                      source : report?.source ?? "N/A",
+                      updatedAt: report?.updatedAt ?? "N/A",
+                      createdAt : report?.createdAt ?? "N/A"
                     }));
         
         
