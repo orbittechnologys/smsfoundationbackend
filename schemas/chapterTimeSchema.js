@@ -6,6 +6,7 @@ const chapterTimeSchema = mongoose.Schema({
     time:{type:Number,default:0}, //storing time in mins,
     page:{type:Number,default:0},
     status:{type:String, default:"ONGOING"},
+    source :{type:String, default:"WEB"},
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
   });

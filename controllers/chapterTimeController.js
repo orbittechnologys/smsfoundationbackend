@@ -8,7 +8,7 @@ import SubjectTime from "../schemas/subjectTimeSchema.js";
 
 export const updateChapterTime = asyncHandler(async (req,res)=> {
     try {
-        const {chapterId,studentId,time, page} = req.body;
+        const {chapterId,studentId,time, page, source} = req.body;
 
         const chapterDoc = await Chapter.findById(chapterId).populate("subject").exec();
         if(!chapterDoc){
@@ -32,7 +32,8 @@ export const updateChapterTime = asyncHandler(async (req,res)=> {
                 student:studentId,
                 chapter:chapterId,
                 time,
-                page
+                page,
+                source
               });
 
             
@@ -46,7 +47,8 @@ export const updateChapterTime = asyncHandler(async (req,res)=> {
             console.log("Updating Chapter time");
             await ChapterTime.updateOne({_id:chapterTimeDoc._id},{
                 time: chapterTimeDoc.time + time,
-                page
+                page,
+                source
             })
 
             await Chapter.updateOne({_id:chapterId},{
