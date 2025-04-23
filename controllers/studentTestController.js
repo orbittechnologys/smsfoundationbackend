@@ -530,6 +530,11 @@ export const getLearningReportForStudent = asyncHandler(async (req, res) => {
         .json({ success: false, message: "Student not found." });
     }
 
+    const chapterTimes = await ChapterTime.find({ student: studentId })
+      .populate("chapter")
+      .sort({ updatedAt: -1 }) // Sorts in descending order (latest first)
+      .exec();
+
     // Extract learning report details
     const learningReport = studentDoc.subjectCompletion || [];
 
@@ -543,6 +548,7 @@ export const getLearningReportForStudent = asyncHandler(async (req, res) => {
         school: studentDoc.school?._id, // Only school ID
       },
       learningReport,
+      chapterTimes,
     });
   } catch (error) {
     console.error("Error fetching learning report:", error);

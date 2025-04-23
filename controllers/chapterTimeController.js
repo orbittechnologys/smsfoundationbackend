@@ -48,7 +48,8 @@ export const updateChapterTime = asyncHandler(async (req,res)=> {
             await ChapterTime.updateOne({_id:chapterTimeDoc._id},{
                 time: chapterTimeDoc.time + time,
                 page,
-                source
+                source,
+                updatedAt: new Date()
             })
 
             await Chapter.updateOne({_id:chapterId},{
